@@ -22,10 +22,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="dirLight.frag">
+    <None Include="fragment_shader.frag">
       <Filter>3 Shaders</Filter>
     </None>
-    <None Include="dirLight.vert">
+    <None Include="vertex_shader.vert">
       <Filter>3 Shaders</Filter>
     </None>
   </ItemGroup>
@@ -48,7 +48,19 @@
     <ClCompile Include="main.cpp">
       <Filter>1 Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Application.cpp">
+    <ClCompile Include="ApplicationInitialize.cpp">
+      <Filter>1 Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ApplicationUpdate.cpp">
+      <Filter>1 Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ApplicationClean.cpp">
+      <Filter>1 Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ApplicationRender.cpp">
+      <Filter>1 Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ApplicationEvents.cpp">
       <Filter>1 Source Files</Filter>
     </ClCompile>
   </ItemGroup>

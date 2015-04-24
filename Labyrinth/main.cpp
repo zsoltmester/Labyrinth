@@ -9,12 +9,14 @@
 #include "Application.h"
 
 
-// TODO move these functions to a helper class (name idea: ApplicationManager)
+// TODO move these functions to a helper class (name idea: ApplicationHelper)
+// or to the Application
 int initializeSDL(SDL_Window*& window);
 int initializeOGL(SDL_Window* window, SDL_GLContext& context);
 int initializeApp(SDL_Window* window, Application& app);
 void run(SDL_Window* window, SDL_GLContext context, Application app);
 void exit(SDL_Window* window, SDL_GLContext context, Application app);
+void wait();
 
 
 int main(int argc, char* args[])
@@ -45,7 +47,7 @@ int main(int argc, char* args[])
 	// 
 
 	exit(window, context, app);
-	system("pause");
+	atexit(wait);
 }
 
 int initializeSDL(SDL_Window *&window)
@@ -198,4 +200,9 @@ void exit(SDL_Window* window, SDL_GLContext context, Application app)
 	SDL_GL_DeleteContext(context);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
+}
+
+void wait()
+{
+	system("pause");
 }

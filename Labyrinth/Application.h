@@ -59,7 +59,7 @@ public:
 	/*
 	Resize the screen, based on the given width and height.
 	*/
-	void resize(int, int);
+	void resize(int width, int height);
 
 private: 
 	GLuint			m_textureID;

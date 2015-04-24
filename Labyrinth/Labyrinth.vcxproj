@@ -84,16 +84,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="dirLight.frag" />
-    <None Include="dirLight.vert" />
+    <None Include="fragment_shader.frag" />
+    <None Include="vertex_shader.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ApplicationClean.cpp" />
+    <ClCompile Include="ApplicationEvents.cpp" />
+    <ClCompile Include="ApplicationRender.cpp" />
+    <ClCompile Include="ApplicationUpdate.cpp" />
     <ClCompile Include="gCamera.cpp" />
     <ClCompile Include="gShaderProgram.cpp" />
     <ClCompile Include="gVertexBuffer.cpp" />
+    <ClCompile Include="ApplicationInitialize.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh_OGL3.cpp" />
-    <ClCompile Include="Application.cpp" />
     <ClCompile Include="ObjParser_OGL3.cpp" />
   </ItemGroup>
   <ItemGroup>
