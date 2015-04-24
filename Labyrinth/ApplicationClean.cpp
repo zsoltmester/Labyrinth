@@ -4,9 +4,7 @@ Application::~Application(void)
 {
 }
 
-void Application::clean()
+void Application::onClean()
 {
-	glDeleteTextures(1, &m_textureID);
-
-	m_program.Clean();
+	shaderManager.Clean();
 }

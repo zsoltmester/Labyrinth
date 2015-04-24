@@ -4,10 +4,8 @@
 #include <SDL_opengl.h>
 
 #include <iostream>
-#include <sstream>
 
 #include "Application.h"
-
 
 // TODO move these functions to a helper class (name idea: ApplicationHelper)
 // or to the Application
@@ -18,17 +16,13 @@ void run(SDL_Window* window, SDL_GLContext context, Application app);
 void exit(SDL_Window* window, SDL_GLContext context, Application app);
 void wait();
 
-
 int main(int argc, char* args[])
 {
 	SDL_Window* window = 0;
 	SDL_GLContext context = 0;
 	Application app;
 
-	//
 	// Initialize SDL, OpenGL and the application
-	//
-
 	if (initializeSDL(window) == -1
 		|| initializeOGL(window, context) == -1
 		|| initializeApp(window, app) == -1)
@@ -36,16 +30,10 @@ int main(int argc, char* args[])
 		return -1;
 	}
 
-	//
 	// Run the application
-	//
-
 	run(window, context, app);
 
-	//
 	// Exit
-	// 
-
 	exit(window, context, app);
 	atexit(wait);
 }
@@ -131,7 +119,7 @@ int initializeOGL(SDL_Window* window, SDL_GLContext& context)
 
 int initializeApp(SDL_Window* window, Application& app)
 {
-	if (!app.initialize())
+	if (!app.onInitialize())
 	{
 		SDL_DestroyWindow(window);
 		std::cout
@@ -161,34 +149,34 @@ void run(SDL_Window* window, SDL_GLContext context, Application app)
 				{
 					isRunning = false;
 				}
-				app.keyboardDown(event.key);
+				app.onKeyboardDown(event.key);
 				break;
 			case SDL_KEYUP:
-				app.keyboardUp(event.key);
+				app.onKeyboardUp(event.key);
 				break;
 			case SDL_MOUSEBUTTONDOWN:
-				app.mouseDown(event.button);
+				app.onMouseDown(event.button);
 				break;
 			case SDL_MOUSEBUTTONUP:
-				app.mouseUp(event.button);
+				app.onMouseUp(event.button);
 				break;
 			case SDL_MOUSEWHEEL:
-				app.mouseWheel(event.wheel);
+				app.onMouseWheel(event.wheel);
 				break;
 			case SDL_MOUSEMOTION:
-				app.mouseMove(event.motion);
+				app.onMouseMove(event.motion);
 				break;
 			case SDL_WINDOWEVENT:
 				if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
 				{
-					app.resize(event.window.data1, event.window.data2);
+					app.onResize(event.window.data1, event.window.data2);
 				}
 				break;
 			}
 		}
 
-		app.update();
-		app.render();
+		app.onUpdate();
+		app.onRender();
 
 		SDL_GL_SwapWindow(window);
 	}
@@ -196,7 +184,7 @@ void run(SDL_Window* window, SDL_GLContext context, Application app)
 
 void exit(SDL_Window* window, SDL_GLContext context, Application app)
 {
-	app.clean();
+	app.onClean();
 	SDL_GL_DeleteContext(context);
 	SDL_DestroyWindow(window);
 	SDL_Quit();

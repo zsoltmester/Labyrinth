@@ -1,36 +1,35 @@
 #include "Application.h"
 
-void Application::keyboardDown(SDL_KeyboardEvent& key)
+void Application::onKeyboardDown(SDL_KeyboardEvent& key)
 {
-	m_camera.KeyboardDown(key);
+	cameraManager.KeyboardDown(key);
 }
 
-void Application::keyboardUp(SDL_KeyboardEvent& key)
+void Application::onKeyboardUp(SDL_KeyboardEvent& key)
 {
-	m_camera.KeyboardUp(key);
+	cameraManager.KeyboardUp(key);
 }
 
-void Application::mouseMove(SDL_MouseMotionEvent& mouse)
+void Application::onMouseMove(SDL_MouseMotionEvent& mouse)
 {
-	m_camera.MouseMove(mouse);
+	// TODO only for DEBUG
+	cameraManager.MouseMove(mouse);
 }
 
-void Application::mouseDown(SDL_MouseButtonEvent& mouse)
-{
-}
-
-void Application::mouseUp(SDL_MouseButtonEvent& mouse)
+void Application::onMouseDown(SDL_MouseButtonEvent& mouse)
 {
 }
 
-void Application::mouseWheel(SDL_MouseWheelEvent& wheel)
+void Application::onMouseUp(SDL_MouseButtonEvent& mouse)
 {
 }
 
-// a két paraméterbe az új ablakméret szélessége (_w) és magassága (_h) található
-void Application::resize(int _w, int _h)
+void Application::onMouseWheel(SDL_MouseWheelEvent& wheel)
 {
-	glViewport(0, 0, _w, _h);
+}
 
-	m_camera.Resize(_w, _h);
+void Application::onResize(int width, int height)
+{
+	glViewport(0, 0, width, height);
+	cameraManager.Resize(width, height);
 }
