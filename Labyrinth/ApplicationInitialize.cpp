@@ -15,8 +15,6 @@ bool Application::onInitialize()
 	glEnable(GL_CULL_FACE);
 	glPolygonMode(GL_BACK, GL_LINE);
 
-	cameraManager.SetProj(45.0f, 640.0f / 480.0f, 0.01f, 1000.0f);
-
 	// load shaders
 	shaderManager.AttachShader(GL_VERTEX_SHADER, "vertex_shader.vert");
 	shaderManager.AttachShader(GL_FRAGMENT_SHADER, "fragment_shader.frag");
@@ -24,6 +22,8 @@ bool Application::onInitialize()
 	{
 		return false;
 	}
+
+	cameraManager.SetProj(45.0f, 640.0f / 480.0f, 0.01f, 1000.0f);
 
 	return true;
 }

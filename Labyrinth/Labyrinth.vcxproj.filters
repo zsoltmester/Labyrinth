@@ -91,11 +91,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="texture.png">
-      <Filter>4 Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
     <Object Include="Suzanne.obj">
       <Filter>4 Resource Files</Filter>
     </Object>

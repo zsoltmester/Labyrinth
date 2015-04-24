@@ -1,4 +1,4 @@
 namespace config
 {
-	const bool isDebug = true;
+	const bool IS_DEBUG = true;
 }
