@@ -93,7 +93,7 @@
     <ClCompile Include="gVertexBuffer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh_OGL3.cpp" />
-    <ClCompile Include="MyApp.cpp" />
+    <ClCompile Include="Application.cpp" />
     <ClCompile Include="ObjParser_OGL3.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -102,7 +102,7 @@
     <ClInclude Include="gShaderProgram.h" />
     <ClInclude Include="gVertexBuffer.h" />
     <ClInclude Include="Mesh_OGL3.h" />
-    <ClInclude Include="MyApp.h" />
+    <ClInclude Include="Application.h" />
     <ClInclude Include="ObjParser_OGL3.h" />
   </ItemGroup>
   <ItemGroup>

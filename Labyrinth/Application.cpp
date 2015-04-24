@@ -1,4 +1,4 @@
-#include "MyApp.h"
+#include "Application.h"
 #include "GLUtils.hpp"
 
 #include <GL/GLU.h>
@@ -6,19 +6,19 @@
 
 #include "ObjParser_OGL3.h"
 
-CMyApp::CMyApp(void)
+Application::Application(void)
 {
 	m_textureID = 0;
 	m_mesh = 0;
 }
 
 
-CMyApp::~CMyApp(void)
+Application::~Application(void)
 {
 }
 
 
-GLuint CMyApp::GenTexture()
+GLuint GenTexture()
 {
     unsigned char tex[256][256][3];
  
@@ -50,7 +50,7 @@ GLuint CMyApp::GenTexture()
 	return tmpID;
 }
 
-bool CMyApp::Init()
+bool Application::initialize()
 {
 	// törlési szín legyen kékes
 	glClearColor(0.125f, 0.25f, 0.5f, 1.0f);
@@ -116,14 +116,14 @@ bool CMyApp::Init()
 	return true;
 }
 
-void CMyApp::Clean()
+void Application::clean()
 {
 	glDeleteTextures(1, &m_textureID);
 
 	m_program.Clean();
 }
 
-void CMyApp::Update()
+void Application::update()
 {
 	static Uint32 last_time = SDL_GetTicks();
 	float delta_time = (SDL_GetTicks() - last_time)/1000.0f;
@@ -134,7 +134,7 @@ void CMyApp::Update()
 }
 
 
-void CMyApp::Render()
+void Application::render()
 {
 	// töröljük a frampuffert (GL_COLOR_BUFFER_BIT) és a mélységi Z puffert (GL_DEPTH_BUFFER_BIT)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -181,35 +181,35 @@ void CMyApp::Render()
 	m_program.Off();
 }
 
-void CMyApp::KeyboardDown(SDL_KeyboardEvent& key)
+void Application::keyboardDown(SDL_KeyboardEvent& key)
 {
 	m_camera.KeyboardDown(key);
 }
 
-void CMyApp::KeyboardUp(SDL_KeyboardEvent& key)
+void Application::keyboardUp(SDL_KeyboardEvent& key)
 {
 	m_camera.KeyboardUp(key);
 }
 
-void CMyApp::MouseMove(SDL_MouseMotionEvent& mouse)
+void Application::mouseMove(SDL_MouseMotionEvent& mouse)
 {
 	m_camera.MouseMove(mouse);
 }
 
-void CMyApp::MouseDown(SDL_MouseButtonEvent& mouse)
+void Application::mouseDown(SDL_MouseButtonEvent& mouse)
 {
 }
 
-void CMyApp::MouseUp(SDL_MouseButtonEvent& mouse)
+void Application::mouseUp(SDL_MouseButtonEvent& mouse)
 {
 }
 
-void CMyApp::MouseWheel(SDL_MouseWheelEvent& wheel)
+void Application::mouseWheel(SDL_MouseWheelEvent& wheel)
 {
 }
 
 // a két paraméterbe az új ablakméret szélessége (_w) és magassága (_h) található
-void CMyApp::Resize(int _w, int _h)
+void Application::resize(int _w, int _h)
 {
 	glViewport(0, 0, _w, _h);
 

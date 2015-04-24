@@ -17,7 +17,7 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
       <ParseFiles>true</ParseFiles>
     </Filter>
-    <Filter Include="5 Utils">
+    <Filter Include="5 External Utils">
       <UniqueIdentifier>{95e75c55-cbbe-4355-91be-983ac5b521e8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -31,47 +31,47 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gCamera.cpp">
-      <Filter>5 Utils</Filter>
+      <Filter>5 External Utils</Filter>
     </ClCompile>
     <ClCompile Include="gShaderProgram.cpp">
-      <Filter>5 Utils</Filter>
+      <Filter>5 External Utils</Filter>
     </ClCompile>
     <ClCompile Include="gVertexBuffer.cpp">
-      <Filter>5 Utils</Filter>
+      <Filter>5 External Utils</Filter>
     </ClCompile>
     <ClCompile Include="Mesh_OGL3.cpp">
-      <Filter>5 Utils</Filter>
+      <Filter>5 External Utils</Filter>
     </ClCompile>
     <ClCompile Include="ObjParser_OGL3.cpp">
-      <Filter>5 Utils</Filter>
+      <Filter>5 External Utils</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>1 Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MyApp.cpp">
+    <ClCompile Include="Application.cpp">
       <Filter>1 Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gCamera.h">
-      <Filter>5 Utils</Filter>
+      <Filter>5 External Utils</Filter>
     </ClInclude>
     <ClInclude Include="GLUtils.hpp">
-      <Filter>5 Utils</Filter>
+      <Filter>5 External Utils</Filter>
     </ClInclude>
     <ClInclude Include="gShaderProgram.h">
-      <Filter>5 Utils</Filter>
+      <Filter>5 External Utils</Filter>
     </ClInclude>
     <ClInclude Include="gVertexBuffer.h">
-      <Filter>5 Utils</Filter>
+      <Filter>5 External Utils</Filter>
     </ClInclude>
     <ClInclude Include="Mesh_OGL3.h">
-      <Filter>5 Utils</Filter>
+      <Filter>5 External Utils</Filter>
     </ClInclude>
     <ClInclude Include="ObjParser_OGL3.h">
-      <Filter>5 Utils</Filter>
+      <Filter>5 External Utils</Filter>
     </ClInclude>
-    <ClInclude Include="MyApp.h">
+    <ClInclude Include="Application.h">
       <Filter>2 Header Files</Filter>
     </ClInclude>
   </ItemGroup>
