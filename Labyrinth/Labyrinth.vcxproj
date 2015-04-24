@@ -92,6 +92,7 @@
     <ClCompile Include="ApplicationEvents.cpp" />
     <ClCompile Include="ApplicationRender.cpp" />
     <ClCompile Include="ApplicationUpdate.cpp" />
+    <ClCompile Include="config.h" />
     <ClCompile Include="gCamera.cpp" />
     <ClCompile Include="gShaderProgram.cpp" />
     <ClCompile Include="gVertexBuffer.cpp" />

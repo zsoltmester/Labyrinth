@@ -63,6 +63,9 @@
     <ClCompile Include="ApplicationEvents.cpp">
       <Filter>1 Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="config.h">
+      <Filter>2 Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gCamera.h">
