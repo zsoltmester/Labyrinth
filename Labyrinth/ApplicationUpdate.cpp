@@ -1,7 +1,7 @@
 #include "Application.h"
 
 #include "config.h"
-
+ 
 void Application::onUpdate()
 {
 	if (config::IS_DEBUG) 

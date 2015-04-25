@@ -10,7 +10,7 @@
 //
 // Helper functions
 //
-
+ 
 void createQuad(gVertexBuffer &vertexBufferManager, GLuint &grassTextureID)
 {
 	// position                                    x  y                  z

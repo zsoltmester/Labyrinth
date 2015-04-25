@@ -4,7 +4,7 @@
 
 #include "config.h"
 
-void Application::drawWall(glm::mat4 matWorld)
+void Application::drawWall(const glm::mat4 matWorld)
 {
 	glm::mat4 mvp = cameraManager.GetViewProj() * matWorld;
 	shaderManager.SetUniform("MVP", mvp);
@@ -20,6 +20,7 @@ void Application::onRender()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	shaderManager.On();
+	vertexBufferManager.On();
 
 	glm::mat4 matWorld;
 	glm::mat4 mvp;
@@ -29,49 +30,51 @@ void Application::onRender()
 	{
 		for (short j = 0; j < config::MAP_SIZE; ++j) 
 		{
-			matWorld = glm::translate<float>(i, 0, j);
-			mvp = cameraManager.GetViewProj() * matWorld;
+			const glm::mat4 translateToCurrent 
+				= glm::translate<float>(i * config::QUAD_SIDE, 0, j * config::QUAD_SIDE);
 
+			// the grass
+			mvp = cameraManager.GetViewProj() * translateToCurrent;
 			shaderManager.SetUniform("MVP", mvp);
 			shaderManager.SetTexture("texture_image", 0, grassTextureID);
-
-			vertexBufferManager.On();
 			vertexBufferManager.Draw(GL_QUADS, 0, 4);
+
+			//
+			// the walls
+			//
 
 			if (fields[i][j].hasLeftWall())
 			{
-				drawWall(matWorld);
+				drawWall(translateToCurrent);
 			}
 
 			if (fields[i][j].hasRightWall())
 			{
-				matWorld = glm::translate<float>(i, 0, j);
-				matWorld = matWorld * glm::translate<float>(0, 0, config::QUAD_SIDE - config::WALL_THICKNESS);
+				matWorld = translateToCurrent 
+					* glm::translate<float>(0, 0, config::QUAD_SIDE - config::WALL_THICKNESS);
 				drawWall(matWorld);
 			}
 
 			if (fields[i][j].hasUpperWall())
 			{
-				matWorld = glm::translate<float>(i, 0, j);
-				matWorld = matWorld
-						* glm::translate<float>(config::QUAD_SIDE, 0, 0)
-						* glm::rotate<float>(-90, 0, 1, 0);
+				matWorld = translateToCurrent
+					* glm::translate<float>(config::QUAD_SIDE, 0, 0)
+					* glm::rotate<float>(-90, 0, 1, 0);
 				drawWall(matWorld);
 			}
 
 			if (fields[i][j].hasLowerWall())
 			{
-				matWorld = glm::translate<float>(i, 0, j);
-				matWorld = matWorld
+				matWorld = translateToCurrent
 					* glm::translate<float>(config::WALL_THICKNESS, 0, 0)
 					* glm::rotate<float>(-90, 0, 1, 0);
 				drawWall(matWorld);
 			}
 
-			vertexBufferManager.Off();
 		}
 	}
 
+	vertexBufferManager.Off();
 	shaderManager.Off();
 
 	//std::cout << "[onRender()] End" << std::endl;
