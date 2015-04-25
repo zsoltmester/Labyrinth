@@ -9,11 +9,11 @@
 
 // TODO move these functions to a helper class (name idea: ApplicationHelper)
 // or to the Application
-int initializeSDL(SDL_Window*& window);
-int initializeOGL(SDL_Window* window, SDL_GLContext& context);
-int initializeApp(SDL_Window* window, Application& app);
-void run(SDL_Window* window, SDL_GLContext context, Application app);
-void exit(SDL_Window* window, SDL_GLContext context, Application app);
+const int initializeSDL(SDL_Window*& window);
+const int initializeOGL(SDL_Window *const window, SDL_GLContext& context);
+const int initializeApp(SDL_Window *const window, Application& app);
+void run(SDL_Window *const window, Application app);
+void exit(SDL_Window *const window, SDL_GLContext context, Application app);
 void wait();
 
 int main(int argc, char* args[])
@@ -31,14 +31,14 @@ int main(int argc, char* args[])
 	}
 
 	// Run the application
-	run(window, context, app);
+	run(window, app);
 
 	// Exit
 	exit(window, context, app);
 	atexit(wait);
 }
 
-int initializeSDL(SDL_Window *&window)
+const int initializeSDL(SDL_Window *&window)
 {
 	if (SDL_Init(SDL_INIT_VIDEO) == -1)
 	{
@@ -79,7 +79,7 @@ int initializeSDL(SDL_Window *&window)
 	return 0;
 }
 
-int initializeOGL(SDL_Window* window, SDL_GLContext& context)
+const int initializeOGL(SDL_Window *const window, SDL_GLContext& context)
 {
 	context = SDL_GL_CreateContext(window);
 	if (context == 0)
@@ -117,7 +117,7 @@ int initializeOGL(SDL_Window* window, SDL_GLContext& context)
 	return 0;
 }
 
-int initializeApp(SDL_Window* window, Application& app)
+const int initializeApp(SDL_Window *const window, Application& app)
 {
 	if (!app.onInitialize())
 	{
@@ -131,7 +131,7 @@ int initializeApp(SDL_Window* window, Application& app)
 	return 0;
 }
 
-void run(SDL_Window* window, SDL_GLContext context, Application app)
+void run(SDL_Window *const window, Application app)
 {
 	bool isRunning = true;
 	while (isRunning)
@@ -182,7 +182,7 @@ void run(SDL_Window* window, SDL_GLContext context, Application app)
 	}
 }
 
-void exit(SDL_Window* window, SDL_GLContext context, Application app)
+void exit(SDL_Window *const window, SDL_GLContext context, Application app)
 {
 	app.onClean();
 	SDL_GL_DeleteContext(context);

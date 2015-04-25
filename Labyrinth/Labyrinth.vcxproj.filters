@@ -66,6 +66,9 @@
     <ClCompile Include="config.h">
       <Filter>2 Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="Field.cpp">
+      <Filter>1 Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gCamera.h">
@@ -87,6 +90,9 @@
       <Filter>5 External Utils</Filter>
     </ClInclude>
     <ClInclude Include="Application.h">
+      <Filter>2 Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Field.h">
       <Filter>2 Header Files</Filter>
     </ClInclude>
   </ItemGroup>

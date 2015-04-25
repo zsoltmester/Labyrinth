@@ -1,6 +1,8 @@
 #include "Application.h"
 
 #include <iostream>
+#include <stdlib.h>
+#include <time.h>
 
 #include "config.h"
 #include "GLUtils.hpp"
@@ -11,7 +13,7 @@
 
 void createQuad(gVertexBuffer &vertexBufferManager, GLuint &grassTextureID)
 {
-	// position                                     x  y                   z
+	// position                                    x  y                  z
 	vertexBufferManager.AddData(0,                 0, 0,                 0); // upper left
 	vertexBufferManager.AddData(0,                 0, 0, config::QUAD_SIDE); // lower left
 	vertexBufferManager.AddData(0, config::QUAD_SIDE, 0, config::QUAD_SIDE); // lower right
@@ -65,7 +67,7 @@ void createCuboid(gVertexBuffer &vertexBufferManager, GLuint &wallTextureID)
 	vertexBufferManager.AddData(0, config::QUAD_SIDE,                   0, config::WALL_THICKNESS);
 
 	//
-	// TODO normal
+	// normal --TODO
 	//
 
 	// upper side                  x  y  z
@@ -74,29 +76,29 @@ void createCuboid(gVertexBuffer &vertexBufferManager, GLuint &wallTextureID)
 	vertexBufferManager.AddData(1, 0, 1, 0);
 	vertexBufferManager.AddData(1, 0, 1, 0);
 	// height related 1. side
-	vertexBufferManager.AddData(1, 0, 0, 0);
-	vertexBufferManager.AddData(1, 0, 0, 0);
-	vertexBufferManager.AddData(1, 0, 0, 0);
-	vertexBufferManager.AddData(1, 0, 0, 0);
+	vertexBufferManager.AddData(1, 0, 1, 0);
+	vertexBufferManager.AddData(1, 0, 1, 0);
+	vertexBufferManager.AddData(1, 0, 1, 0);
+	vertexBufferManager.AddData(1, 0, 1, 0);
 	// height related 2. side
-	vertexBufferManager.AddData(1, 0, 0, 0);
-	vertexBufferManager.AddData(1, 0, 0, 0);
-	vertexBufferManager.AddData(1, 0, 0, 0);
-	vertexBufferManager.AddData(1, 0, 0, 0);
+	vertexBufferManager.AddData(1, 0, 1, 0);
+	vertexBufferManager.AddData(1, 0, 1, 0);
+	vertexBufferManager.AddData(1, 0, 1, 0);
+	vertexBufferManager.AddData(1, 0, 1, 0);
 	// thick related 1. side
-	vertexBufferManager.AddData(1, 0, 0, 0);
-	vertexBufferManager.AddData(1, 0, 0, 0);
-	vertexBufferManager.AddData(1, 0, 0, 0);
-	vertexBufferManager.AddData(1, 0, 0, 0);
+	vertexBufferManager.AddData(1, 0, 1, 0);
+	vertexBufferManager.AddData(1, 0, 1, 0);
+	vertexBufferManager.AddData(1, 0, 1, 0);
+	vertexBufferManager.AddData(1, 0, 1, 0);
 	// thick related 2. side
-	vertexBufferManager.AddData(1, 0, 0, 0);
-	vertexBufferManager.AddData(1, 0, 0, 0);
-	vertexBufferManager.AddData(1, 0, 0, 0);
-	vertexBufferManager.AddData(1, 0, 0, 0);
+	vertexBufferManager.AddData(1, 0, 1, 0);
+	vertexBufferManager.AddData(1, 0, 1, 0);
+	vertexBufferManager.AddData(1, 0, 1, 0);
+	vertexBufferManager.AddData(1, 0, 1, 0);
 
 	// texture
 	const short NUMBER_OF_SIDES = 5;
-	for (int i = 0; i < NUMBER_OF_SIDES; ++i)
+	for (short i = 0; i < NUMBER_OF_SIDES; ++i)
 	{
 		vertexBufferManager.AddData(2, 0, 0);
 		vertexBufferManager.AddData(2, 1, 0);
@@ -107,6 +109,49 @@ void createCuboid(gVertexBuffer &vertexBufferManager, GLuint &wallTextureID)
 	wallTextureID = TextureFromFile("texture_wall.jpg");
 }
 
+void initAndConfigFields(Field fields[config::MAP_SIZE][config::MAP_SIZE])
+{
+	srand(time(NULL));
+
+	const short correctedPossibility = 1.0f / (config::WALL_POSSIBILITY / 2.0f);
+
+	for (short i = 0; i < config::MAP_SIZE; ++i)
+	{
+		for (short j = 0; j < config::MAP_SIZE; ++j)
+		{
+			if (i == 0)						fields[i][j].setIsOnLowerBorder(true);
+			if (i == config::MAP_SIZE - 1)	fields[i][j].setIsOnUpperBorder(true);
+			if (j == 0)						fields[i][j].setIsOnLeftBorder(true);
+			if (j == config::MAP_SIZE - 1)	fields[i][j].setIsOnRightBorder(true);
+
+			if (!fields[i][j].hasLeftWall() && rand() % correctedPossibility == 0)
+			{
+				fields[i][j].setHasLeftWall(true);
+				if (!fields[i][j].isOnLeftBorder()) fields[i][j - 1].setHasRightWall(true);
+			}
+
+			if (!fields[i][j].hasRightWall() && rand() % correctedPossibility == 0)
+			{
+				fields[i][j].setHasRightWall(true);
+				if (!fields[i][j].isOnRightBorder()) fields[i][j + 1].setHasLeftWall(true);
+			}
+
+			if (!fields[i][j].hasUpperWall() && rand() % correctedPossibility == 0)
+			{
+				fields[i][j].setHasUpperWall(true);
+				if (!fields[i][j].isOnUpperBorder()) fields[i + 1][j].setHasLowerWall(true);
+			}
+			
+			if (!fields[i][j].hasLowerWall() && rand() % correctedPossibility == 0)
+			{
+				fields[i][j].setHasLowerWall(true);
+				if (!fields[i][j].isOnLowerBorder()) fields[i - 1][j].setHasUpperWall(true);
+			}
+		}
+	}
+
+}
+
 //
 // Application's functions
 //
@@ -115,7 +160,7 @@ Application::Application(void)
 {
 }
 
-bool Application::onInitialize()
+const bool Application::onInitialize()
 {
 	//std::cout << "[onInitialize()] Start" << std::endl;
 
@@ -149,6 +194,8 @@ bool Application::onInitialize()
 	}
 
 	cameraManager.SetProj(45.0f, 640.0f / 480.0f, 0.01f, 1000.0f);
+
+	initAndConfigFields(fields);
 
 	//std::cout << "[onInitialize()] End" << std::endl;
 

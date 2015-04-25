@@ -38,7 +38,7 @@ void Application::onMouseWheel(SDL_MouseWheelEvent& wheel)
 	// nothing to do here
 }
 
-void Application::onResize(int width, int height)
+void Application::onResize(const int width, const int height)
 {
 	glViewport(0, 0, width, height);
 	cameraManager.Resize(width, height);
