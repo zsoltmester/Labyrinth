@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "config.h"
 #include "GLUtils.hpp"
 
 //
@@ -10,15 +11,11 @@
 
 void createQuad(gVertexBuffer &vertexBufferManager, GLuint &grassTextureID)
 {
-	vertexBufferManager.AddAttribute(0, 3); // position
-	vertexBufferManager.AddAttribute(1, 3); // normal
-	vertexBufferManager.AddAttribute(2, 2); // texture
-
-	// position                     x  y   z
-	vertexBufferManager.AddData(0, 1, 0, 1); // lower right
-	vertexBufferManager.AddData(0, 1, 0, -1); // upper right
-	vertexBufferManager.AddData(0, -1, 0, -1); // upper left
-	vertexBufferManager.AddData(0, -1, 0, 1); // lower left
+	// position                                     x  y                   z
+	vertexBufferManager.AddData(0,                 0, 0,                 0); // upper left
+	vertexBufferManager.AddData(0,                 0, 0, config::QUAD_SIDE); // lower left
+	vertexBufferManager.AddData(0, config::QUAD_SIDE, 0, config::QUAD_SIDE); // lower right
+	vertexBufferManager.AddData(0, config::QUAD_SIDE, 0,                 0); // upper right
 
 	// normal                      x  y  z
 	vertexBufferManager.AddData(1, 0, 1, 0);
@@ -32,9 +29,82 @@ void createQuad(gVertexBuffer &vertexBufferManager, GLuint &grassTextureID)
 	vertexBufferManager.AddData(2, 0, 1);
 	vertexBufferManager.AddData(2, 1, 1);
 
-	vertexBufferManager.InitBuffers();
-
 	grassTextureID = TextureFromFile("texture_grass.jpg");
+}
+
+void createCuboid(gVertexBuffer &vertexBufferManager, GLuint &wallTextureID)
+{
+	//
+	// position  
+	//
+
+	// upper side                                  x                    y                       z
+	vertexBufferManager.AddData(0, config::QUAD_SIDE, config::WALL_HEIGHT, config::WALL_THICKNESS);
+	vertexBufferManager.AddData(0, config::QUAD_SIDE, config::WALL_HEIGHT,                      0);
+	vertexBufferManager.AddData(0,                 0, config::WALL_HEIGHT,                      0);
+	vertexBufferManager.AddData(0,                 0, config::WALL_HEIGHT, config::WALL_THICKNESS);
+	// height related 1. side  												
+	vertexBufferManager.AddData(0, config::QUAD_SIDE,                   0, config::WALL_THICKNESS);
+	vertexBufferManager.AddData(0, config::QUAD_SIDE, config::WALL_HEIGHT, config::WALL_THICKNESS);
+	vertexBufferManager.AddData(0,                 0, config::WALL_HEIGHT, config::WALL_THICKNESS);
+	vertexBufferManager.AddData(0,                 0,                   0, config::WALL_THICKNESS);
+	// height related 2. side												
+	vertexBufferManager.AddData(0,                 0,                   0,                      0);
+	vertexBufferManager.AddData(0,                 0, config::WALL_HEIGHT,                      0);
+	vertexBufferManager.AddData(0, config::QUAD_SIDE, config::WALL_HEIGHT,                      0);
+	vertexBufferManager.AddData(0, config::QUAD_SIDE,                   0,                      0);
+	// thick related 1. side												
+	vertexBufferManager.AddData(0,                 0,                   0, config::WALL_THICKNESS);
+	vertexBufferManager.AddData(0,                 0, config::WALL_HEIGHT, config::WALL_THICKNESS);
+	vertexBufferManager.AddData(0,                 0, config::WALL_HEIGHT,                      0);
+	vertexBufferManager.AddData(0,                 0,                   0,                      0);
+	// thick related 2. side												                     
+	vertexBufferManager.AddData(0, config::QUAD_SIDE,                   0,                      0);
+	vertexBufferManager.AddData(0, config::QUAD_SIDE, config::WALL_HEIGHT,                      0);
+	vertexBufferManager.AddData(0, config::QUAD_SIDE, config::WALL_HEIGHT, config::WALL_THICKNESS);
+	vertexBufferManager.AddData(0, config::QUAD_SIDE,                   0, config::WALL_THICKNESS);
+
+	//
+	// TODO normal
+	//
+
+	// upper side                  x  y  z
+	vertexBufferManager.AddData(1, 0, 1, 0);
+	vertexBufferManager.AddData(1, 0, 1, 0);
+	vertexBufferManager.AddData(1, 0, 1, 0);
+	vertexBufferManager.AddData(1, 0, 1, 0);
+	// height related 1. side
+	vertexBufferManager.AddData(1, 0, 0, 0);
+	vertexBufferManager.AddData(1, 0, 0, 0);
+	vertexBufferManager.AddData(1, 0, 0, 0);
+	vertexBufferManager.AddData(1, 0, 0, 0);
+	// height related 2. side
+	vertexBufferManager.AddData(1, 0, 0, 0);
+	vertexBufferManager.AddData(1, 0, 0, 0);
+	vertexBufferManager.AddData(1, 0, 0, 0);
+	vertexBufferManager.AddData(1, 0, 0, 0);
+	// thick related 1. side
+	vertexBufferManager.AddData(1, 0, 0, 0);
+	vertexBufferManager.AddData(1, 0, 0, 0);
+	vertexBufferManager.AddData(1, 0, 0, 0);
+	vertexBufferManager.AddData(1, 0, 0, 0);
+	// thick related 2. side
+	vertexBufferManager.AddData(1, 0, 0, 0);
+	vertexBufferManager.AddData(1, 0, 0, 0);
+	vertexBufferManager.AddData(1, 0, 0, 0);
+	vertexBufferManager.AddData(1, 0, 0, 0);
+
+	// texture
+	const short NUMBER_OF_SIDES = 5;
+	for (int i = 0; i < NUMBER_OF_SIDES; ++i)
+	{
+		vertexBufferManager.AddData(2, 0, 0);
+		vertexBufferManager.AddData(2, 1, 0);
+		vertexBufferManager.AddData(2, 0, 1);
+		vertexBufferManager.AddData(2, 1, 1);
+	}
+
+	wallTextureID = TextureFromFile("texture_wall.jpg");
 }
 
 //
@@ -58,13 +128,21 @@ bool Application::onInitialize()
 	glEnable(GL_CULL_FACE);
 	glPolygonMode(GL_BACK, GL_LINE);
 
+	// configure vertex buffer
+	vertexBufferManager.AddAttribute(0, 3); // position
+	vertexBufferManager.AddAttribute(1, 3); // normal
+	vertexBufferManager.AddAttribute(2, 2); // texture
+
+	// create geometries
 	createQuad(vertexBufferManager, grassTextureID);
+	createCuboid(vertexBufferManager, wallTextureID);
+	vertexBufferManager.InitBuffers();
 
 	// load shaders
 	shaderManager.AttachShader(GL_VERTEX_SHADER, "vertex_shader.vert");
 	shaderManager.AttachShader(GL_FRAGMENT_SHADER, "fragment_shader.frag");
 	shaderManager.BindAttribLoc(0, "vs_in_position");
-	shaderManager.BindAttribLoc(2, "vs_in_texture_grass");
+	shaderManager.BindAttribLoc(2, "vs_in_texture");
 	if (!shaderManager.LinkProgram())
 	{
 		return false;

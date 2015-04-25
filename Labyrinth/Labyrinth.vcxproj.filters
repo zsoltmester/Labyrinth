@@ -99,5 +99,8 @@
     <Image Include="texture_grass.jpg">
       <Filter>4 Resource Files</Filter>
     </Image>
+    <Image Include="texture_wall.jpg">
+      <Filter>4 Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

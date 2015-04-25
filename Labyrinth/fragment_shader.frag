@@ -1,15 +1,15 @@
 #version 130
 
 // in
-in vec2 vs_out_texture_grass;
+in vec2 vs_out_texture;
 
 //out
 out vec4 fs_out_col;
 
 //uniform
-uniform sampler2D texture_grass;
+uniform sampler2D texture_image;
 
 void main()
 {
-	fs_out_col = texture(texture_grass, vs_out_texture_grass.st);
+	fs_out_col = texture(texture_image, vs_out_texture.st);
 }

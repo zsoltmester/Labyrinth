@@ -45,5 +45,6 @@ private:
 	gVertexBuffer	vertexBufferManager;
 
 	GLuint			grassTextureID;
+	GLuint			wallTextureID;
 };
 
