@@ -39,8 +39,11 @@ public:
 	void onResize(int width, int height);
 
 private: 
+	// managers
 	gCamera			cameraManager;
 	gShaderProgram	shaderManager;
 	gVertexBuffer	vertexBufferManager;
+
+	GLuint			grassTextureID;
 };
 

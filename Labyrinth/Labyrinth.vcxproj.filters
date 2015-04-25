@@ -95,4 +95,9 @@
       <Filter>4 Resource Files</Filter>
     </Object>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="texture_grass.jpg">
+      <Filter>4 Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
