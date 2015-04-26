@@ -51,9 +51,25 @@ private:
 	gShaderProgram shaderManager;
 	gVertexBuffer vertexBufferManager;
 
+	int startOfQuadVertices;
+	int numberOfQuadVertices;
+	int startOfCuboidVertices;
+	int numberOfCuboidVertices;
+	int startOfCylinderShieldVertices;
+	int numberOfCylinderShieldVertices;
+	int startOfCylinderTopVertices;
+	int numberOfCylinderTopVertices;
+	int startOfCylinderBottomVertices;
+	int numberOfCylinderBottomVertices;
+	int startOfTopPyramidVertices;
+	int numberOfTopPyramidVertices;
+	int startOfBottomPyramidVertices;
+	int numberOfBottomPyramidVertices;
+
 	GLuint grassTextureID;
 	GLuint wallTextureID;
 	GLuint coinTextureID;
+	GLuint diamondTextureID;
 
 	Field fields[config::MAP_SIZE][config::MAP_SIZE];
 };

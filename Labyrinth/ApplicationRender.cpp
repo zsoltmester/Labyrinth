@@ -10,7 +10,7 @@ void Application::drawWall(const glm::mat4 matWorld)
 	shaderManager.SetUniform("MVP", mvp);
 	shaderManager.SetTexture("texture_image", 0, wallTextureID);
 
-	vertexBufferManager.Draw(GL_QUADS, 4, 20);
+	vertexBufferManager.Draw(GL_QUADS, startOfCuboidVertices, numberOfCuboidVertices);
 }
 
 void Application::onRender()
@@ -37,7 +37,7 @@ void Application::onRender()
 			mvp = cameraManager.GetViewProj() * translateToCurrent;
 			shaderManager.SetUniform("MVP", mvp);
 			shaderManager.SetTexture("texture_image", 0, grassTextureID);
-			vertexBufferManager.Draw(GL_QUADS, 0, 4);
+			vertexBufferManager.Draw(GL_QUADS, startOfQuadVertices, numberOfQuadVertices);
 
 			if (fields[i][j].hasCoin())
 			{
@@ -45,18 +45,35 @@ void Application::onRender()
 				const float offset = config::FIELD_SIZE / 2.0f;
 
 				matWorld = translateToCurrent
-					* glm::translate<float>(offset - config::COIN_THICKNESS / 2.0f, 0, offset)
-					* glm::rotate<float>(coinRotation, 0, 1, 0)
-					* glm::translate<float>(config::COIN_THICKNESS / 2.0f - offset, 0, -offset)
-					* glm::rotate<float>(-90, 1, 0, 0);
+					* glm::translate<float>(offset - config::COIN_THICKNESS / 2.0f, 0, offset) // translate back from the origin
+					* glm::rotate<float>(coinRotation, 0, 1, 0) // for animation
+					* glm::translate<float>(config::COIN_THICKNESS / 2.0f - offset, 0, -offset) // translate to the origin
+					* glm::rotate<float>(-90, 1, 0, 0); // turn to horizontal
 				mvp = cameraManager.GetViewProj() * matWorld;
 
 				shaderManager.SetUniform("MVP", mvp);
 				shaderManager.SetTexture("texture_image", 0, coinTextureID);
 
-				vertexBufferManager.Draw(GL_QUAD_STRIP, 24, 2 * (config::COIN_RESOLUTION + 1));
-				vertexBufferManager.Draw(GL_TRIANGLE_FAN, 24 + 2 * (config::COIN_RESOLUTION + 1), config::COIN_RESOLUTION + 2);
-				vertexBufferManager.Draw(GL_TRIANGLE_FAN, 24 + 2 * (config::COIN_RESOLUTION + 1) + config::COIN_RESOLUTION + 2, config::COIN_RESOLUTION + 2);
+				vertexBufferManager.Draw(GL_QUAD_STRIP, startOfCylinderShieldVertices, numberOfCylinderShieldVertices);
+				vertexBufferManager.Draw(GL_TRIANGLE_FAN, startOfCylinderTopVertices, numberOfCylinderTopVertices);
+				vertexBufferManager.Draw(GL_TRIANGLE_FAN, startOfCylinderBottomVertices, numberOfCylinderBottomVertices);
+			}
+
+			if (fields[i][j].hasDiamond())
+			{
+				const float diamondRotation = SDL_GetTicks() / 1000.0f * 360.0f / config::DIAMOND_ANIMATION_LENGTH;
+				const float offset = config::FIELD_SIZE / 2.0f;
+				
+				matWorld = translateToCurrent
+					* glm::translate<float>(offset, 0, offset) // translate to the middle
+					* glm::rotate<float>(diamondRotation, 0, 1, 0); // for animation
+				mvp = cameraManager.GetViewProj() * matWorld;
+
+				shaderManager.SetUniform("MVP", mvp);
+				shaderManager.SetTexture("texture_image", 0, diamondTextureID);
+
+				vertexBufferManager.Draw(GL_TRIANGLE_FAN, startOfTopPyramidVertices, numberOfTopPyramidVertices);
+				vertexBufferManager.Draw(GL_TRIANGLE_FAN, startOfBottomPyramidVertices, numberOfBottomPyramidVertices);
 			}
 
 			//

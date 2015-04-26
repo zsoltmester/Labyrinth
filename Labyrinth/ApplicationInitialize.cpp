@@ -12,7 +12,7 @@
 // Helper functions
 //
  
-void createQuad(gVertexBuffer * const &vertexBufferManager)
+int createQuad(gVertexBuffer * const &vertexBufferManager)
 {
 	vertexBufferManager
 		// position
@@ -30,9 +30,11 @@ void createQuad(gVertexBuffer * const &vertexBufferManager)
 		->AddData(2, 1, 0)
 		->AddData(2, 0, 1)
 		->AddData(2, 1, 1);
+
+	return 4;
 }
 
-void createCuboid(gVertexBuffer * const &vertexBufferManager)
+int createCuboid(gVertexBuffer * const &vertexBufferManager)
 {
 	//
 	// position  
@@ -78,15 +80,13 @@ void createCuboid(gVertexBuffer * const &vertexBufferManager)
 			->AddData(2, 0, 1)
 			->AddData(2, 1, 1);
 	}
+
+	return 20;
 }
 
-void createCylinder(gVertexBuffer * const &vertexBufferManager)
+int createCylinderShield(gVertexBuffer * const &vertexBufferManager)
 {
 	const float offset = config::FIELD_SIZE / 2.0f;
-
-	//
-	// shield
-	//
 
 	for (int i = 0; i <= config::COIN_RESOLUTION; ++i)
 	{
@@ -109,9 +109,12 @@ void createCylinder(gVertexBuffer * const &vertexBufferManager)
 			->AddData(2, u0, 1);
 	}
 
-	//
-	// top circle
-	//
+	return 2 * (config::COIN_RESOLUTION + 1);
+}
+
+int createCylinderTop(gVertexBuffer * const &vertexBufferManager)
+{
+	const float offset = config::FIELD_SIZE / 2.0f;
 
 	vertexBufferManager
 		->AddData(0, offset, -offset, config::COIN_RADIUS) // center position
@@ -124,16 +127,19 @@ void createCylinder(gVertexBuffer * const &vertexBufferManager)
 		vertexBufferManager
 			// position
 			->AddData(0,
-				offset,
-				config::COIN_RADIUS * uCos - offset, 
-				config::COIN_RADIUS * (uSin + 1))
+			offset,
+			config::COIN_RADIUS * uCos - offset,
+			config::COIN_RADIUS * (uSin + 1))
 			// texture
 			->AddData(2, 0.5f * uCos + 0.5f, 0.5f * uSin + 0.5f);
 	}
 
-	//
-	// bottom circle
-	//
+	return config::COIN_RESOLUTION + 2;
+}
+
+int createCylinderBottom(gVertexBuffer * const &vertexBufferManager)
+{
+	const float offset = config::FIELD_SIZE / 2.0f;
 
 	vertexBufferManager
 		->AddData(0, offset - config::COIN_THICKNESS, -offset, config::COIN_RADIUS) // center position
@@ -146,12 +152,60 @@ void createCylinder(gVertexBuffer * const &vertexBufferManager)
 		vertexBufferManager
 			// texture
 			->AddData(0,
-				offset - config::COIN_THICKNESS,
-				config::COIN_RADIUS * uCos - offset, 
-				config::COIN_RADIUS * (uSin + 1))
+			offset - config::COIN_THICKNESS,
+			config::COIN_RADIUS * uCos - offset,
+			config::COIN_RADIUS * (uSin + 1))
 			// position
 			->AddData(2, 0.5f * uCos + 0.5f, 0.5f * uSin + 0.5f);
 	}
+
+	return config::COIN_RESOLUTION + 2;
+}
+
+int createTopPyramid(gVertexBuffer * const &vertexBufferManager) 
+{
+	vertexBufferManager
+		->AddData(0, 0, config::DIAMOND_BOTTOM_HEIGHT + config::DIAMOND_TOP_HEIGHT, 0) // center position
+		->AddData(2, 0.5f, 0.5f); // center texture
+	for (float i = 0; i <= config::DIAMOND_NUMBER_OF_SIDES; ++i)
+	{
+		const float u = -(i / (float)config::DIAMOND_NUMBER_OF_SIDES) * 2 * 3.1415f;
+		const float uCos = cosf(u);
+		const float uSin = sinf(u);
+		vertexBufferManager
+			// position
+			->AddData(0,
+			config::DIAMOND_RADIUS * uCos,
+			config::DIAMOND_BOTTOM_HEIGHT,
+			config::DIAMOND_RADIUS * uSin)
+			// texture
+			->AddData(2, 0.5f * uCos + 0.5f, 0.5f * uSin + 0.5f);
+	}
+
+	return config::DIAMOND_NUMBER_OF_SIDES + 2;
+}
+
+int createBottomPyramid(gVertexBuffer * const &vertexBufferManager)
+{
+	vertexBufferManager
+		->AddData(0, 0, 0, 0) // center position
+		->AddData(2, 0.5f, 0.5f); // center texture
+	for (float i = 0; i <= config::DIAMOND_NUMBER_OF_SIDES; ++i)
+	{
+		const float u = (i / (float)config::DIAMOND_NUMBER_OF_SIDES) * 2 * 3.1415f;
+		const float uCos = cosf(u);
+		const float uSin = sinf(u);
+		vertexBufferManager
+			// position
+			->AddData(0,
+			config::DIAMOND_RADIUS * uCos,
+			config::DIAMOND_BOTTOM_HEIGHT,
+			config::DIAMOND_RADIUS * uSin)
+			// texture
+			->AddData(2, 0.5f * uCos + 0.5f, 0.5f * uSin + 0.5f);
+	}
+
+	return config::DIAMOND_NUMBER_OF_SIDES + 2;
 }
 
 void initAndConfigFields(Field fields[config::MAP_SIZE][config::MAP_SIZE])
@@ -166,6 +220,18 @@ void initAndConfigFields(Field fields[config::MAP_SIZE][config::MAP_SIZE])
 		if (coinsPlace.find(std::pair<short, short>(i, j)) == coinsPlace.end())
 		{
 			coinsPlace.insert(std::pair<short, short>(i, j));
+		}
+	}
+
+	std::set<std::pair<short, short>> diamondsPlace;
+	while (diamondsPlace.size() < config::NUMBER_OF_DIAMONDS)
+	{
+		const short i = rand() % config::MAP_SIZE;
+		const short j = rand() % config::MAP_SIZE;
+		if ((coinsPlace.find(std::pair<short, short>(i, j)) == coinsPlace.end())
+				&& (diamondsPlace.find(std::pair<short, short>(i, j)) == diamondsPlace.end()))
+		{
+			diamondsPlace.insert(std::pair<short, short>(i, j));
 		}
 	}
 
@@ -220,6 +286,15 @@ void initAndConfigFields(Field fields[config::MAP_SIZE][config::MAP_SIZE])
 			{
 				fields[i][j].setHasCoin(true);
 			}
+
+			//
+			// diamond
+			//
+
+			if (diamondsPlace.find(std::pair<short, short>(i, j)) != diamondsPlace.end())
+			{
+				fields[i][j].setHasDiamond(true);
+			}
 		}
 	}
 }
@@ -250,17 +325,39 @@ const bool Application::onInitialize()
 		.AddAttribute(0, 3) // position
 		->AddAttribute(1, 3) // normal
 		->AddAttribute(2, 2); // texture
-
+	
+	//
 	// create geometries
-	createQuad(&vertexBufferManager);
-	createCuboid(&vertexBufferManager);
-	createCylinder(&vertexBufferManager);
+	//
+
+	startOfQuadVertices = 0;
+	numberOfQuadVertices = createQuad(&vertexBufferManager);
+
+	startOfCuboidVertices = numberOfQuadVertices;
+	numberOfCuboidVertices = createCuboid(&vertexBufferManager);
+
+	startOfCylinderShieldVertices = startOfCuboidVertices + numberOfCuboidVertices;
+	numberOfCylinderShieldVertices = createCylinderShield(&vertexBufferManager);
+
+	startOfCylinderTopVertices = startOfCylinderShieldVertices + numberOfCylinderShieldVertices;
+	numberOfCylinderTopVertices = createCylinderTop(&vertexBufferManager);
+
+	startOfCylinderBottomVertices = startOfCylinderTopVertices + numberOfCylinderTopVertices;
+	numberOfCylinderBottomVertices = createCylinderBottom(&vertexBufferManager);
+
+	startOfTopPyramidVertices = startOfCylinderBottomVertices + numberOfCylinderBottomVertices;
+	numberOfTopPyramidVertices = createTopPyramid(&vertexBufferManager);
+
+	startOfBottomPyramidVertices = startOfTopPyramidVertices + numberOfTopPyramidVertices;
+	numberOfBottomPyramidVertices = createBottomPyramid(&vertexBufferManager);
+
 	vertexBufferManager.InitBuffers();
 
 	// load textures
 	grassTextureID = TextureFromFile("texture_grass.jpg");
 	wallTextureID = TextureFromFile("texture_wall.jpg");
 	coinTextureID = TextureFromFile("texture_coin.jpg");
+	diamondTextureID = TextureFromFile("texture_diamond.jpg");
 
 	// load shaders
 	shaderManager.AttachShader(GL_VERTEX_SHADER, "vertex_shader.vert");

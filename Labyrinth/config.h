@@ -20,4 +20,11 @@ namespace config
 	// and the top and bottom circles with N triangle
 	const short COIN_RESOLUTION = 20;
 	const short NUMBER_OF_COINS = 10;
+
+	const float DIAMOND_BOTTOM_HEIGHT = 0.75f;
+	const float DIAMOND_TOP_HEIGHT = DIAMOND_BOTTOM_HEIGHT / 2.0f;
+	const float DIAMOND_RADIUS = 0.25f;
+	const float DIAMOND_NUMBER_OF_SIDES = 6;
+	const float DIAMOND_ANIMATION_LENGTH = 5;
+	const float NUMBER_OF_DIAMONDS = 5;
 }

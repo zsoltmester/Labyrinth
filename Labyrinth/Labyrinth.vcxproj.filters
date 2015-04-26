@@ -111,5 +111,8 @@
     <Image Include="texture_coin.jpg">
       <Filter>4 Resource Files</Filter>
     </Image>
+    <Image Include="texture_diamond.jpg">
+      <Filter>4 Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
