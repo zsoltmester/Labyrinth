@@ -108,5 +108,8 @@
     <Image Include="texture_wall.jpg">
       <Filter>4 Resource Files</Filter>
     </Image>
+    <Image Include="texture_coin.jpg">
+      <Filter>4 Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
