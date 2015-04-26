@@ -41,8 +41,19 @@ void Application::onRender()
 
 			if (fields[i][j].hasCoin())
 			{
+				const float coinRotation = SDL_GetTicks() / 1000.0f * 360.0f / config::COIN_ANIMATION_LENGTH;
+				const float offset = config::FIELD_SIZE / 2.0f;
+
+				matWorld = translateToCurrent
+					* glm::translate<float>(offset - config::COIN_THICKNESS / 2.0f, 0, offset)
+					* glm::rotate<float>(coinRotation, 0, 1, 0)
+					* glm::translate<float>(config::COIN_THICKNESS / 2.0f - offset, 0, -offset)
+					* glm::rotate<float>(-90, 1, 0, 0);
+				mvp = cameraManager.GetViewProj() * matWorld;
+
+				shaderManager.SetUniform("MVP", mvp);
 				shaderManager.SetTexture("texture_image", 0, coinTextureID);
-				// TODO
+
 				vertexBufferManager.Draw(GL_QUAD_STRIP, 24, 2 * (config::COIN_RESOLUTION + 1));
 				vertexBufferManager.Draw(GL_TRIANGLE_FAN, 24 + 2 * (config::COIN_RESOLUTION + 1), config::COIN_RESOLUTION + 2);
 				vertexBufferManager.Draw(GL_TRIANGLE_FAN, 24 + 2 * (config::COIN_RESOLUTION + 1) + config::COIN_RESOLUTION + 2, config::COIN_RESOLUTION + 2);
