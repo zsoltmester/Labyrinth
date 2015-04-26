@@ -14,20 +14,20 @@ public:
 	gVertexBuffer(void);
 	~gVertexBuffer(void);
 
-	void AddAttribute(int _idx, int _comps);
+	gVertexBuffer* AddAttribute(int _idx, int _comps);
 	
 	/// _idx: the attribute channel on which data is being supplied
-	void AddData(int _idx, float _x);
-	void AddData(int _idx, float _x, float _y);
-	void AddData(int _idx, float _x, float _y, float _z);
-	void AddData(int _idx, float _x, float _y, float _z, float _w);
-	void AddData(int _idx, glm::vec4& _v);
-	void AddData(int _idx, glm::vec3& _v);
-	void AddData(int _idx, glm::vec2& _v);
-	void AddIndex(unsigned int _a);
-	void AddIndex(unsigned int _a, unsigned int _b);
-	void AddIndex(unsigned int _a, unsigned int _b, int unsigned _c);
-	void AddIndex(unsigned int _a, unsigned int _b, int unsigned _c, int unsigned _d);
+	gVertexBuffer* AddData(int _idx, float _x);
+	gVertexBuffer* AddData(int _idx, float _x, float _y);
+	gVertexBuffer* AddData(int _idx, float _x, float _y, float _z);
+	gVertexBuffer* AddData(int _idx, float _x, float _y, float _z, float _w);
+	gVertexBuffer* AddData(int _idx, glm::vec4& _v);
+	gVertexBuffer* AddData(int _idx, glm::vec3& _v);
+	gVertexBuffer* AddData(int _idx, glm::vec2& _v);
+	gVertexBuffer* AddIndex(unsigned int _a);
+	gVertexBuffer* AddIndex(unsigned int _a, unsigned int _b);
+	gVertexBuffer* AddIndex(unsigned int _a, unsigned int _b, int unsigned _c);
+	gVertexBuffer* AddIndex(unsigned int _a, unsigned int _b, int unsigned _c, int unsigned _d);
 
 	void SetPatchVertices(int _n);
 

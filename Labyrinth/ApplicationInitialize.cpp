@@ -11,77 +11,77 @@
 // Helper functions
 //
  
-void createQuad(gVertexBuffer &vertexBufferManager, GLuint &grassTextureID)
+void createQuad(gVertexBuffer * const &vertexBufferManager)
 {
-	// position                                     x  y                  z
-	vertexBufferManager.AddData(0,                  0, 0,                  0); // upper left
-	vertexBufferManager.AddData(0,                  0, 0, config::FIELD_SIZE); // lower left
-	vertexBufferManager.AddData(0, config::FIELD_SIZE, 0, config::FIELD_SIZE); // lower right
-	vertexBufferManager.AddData(0, config::FIELD_SIZE, 0,                  0); // upper right
-
-	// normal                      x  y  z
-	vertexBufferManager.AddData(1, 0, 1, 0);
-	vertexBufferManager.AddData(1, 0, 1, 0);
-	vertexBufferManager.AddData(1, 0, 1, 0);
-	vertexBufferManager.AddData(1, 0, 1, 0);
-
-	// texture
-	vertexBufferManager.AddData(2, 0, 0);
-	vertexBufferManager.AddData(2, 1, 0);
-	vertexBufferManager.AddData(2, 0, 1);
-	vertexBufferManager.AddData(2, 1, 1);
-
-	grassTextureID = TextureFromFile("texture_grass.jpg");
+	vertexBufferManager
+		// position
+		->AddData(0, 0, 0, 0) // upper left
+		->AddData(0, 0, 0, config::FIELD_SIZE) // lower left
+		->AddData(0, config::FIELD_SIZE, 0, config::FIELD_SIZE) // lower right
+		->AddData(0, config::FIELD_SIZE, 0, 0) // upper right
+		// normal
+		->AddData(1, 0, 1, 0)
+		->AddData(1, 0, 1, 0)
+		->AddData(1, 0, 1, 0)
+		->AddData(1, 0, 1, 0)
+		// texture
+		->AddData(2, 0, 0)
+		->AddData(2, 1, 0)
+		->AddData(2, 0, 1)
+		->AddData(2, 1, 1);
 }
 
-void createCuboid(gVertexBuffer &vertexBufferManager, GLuint &wallTextureID)
+void createCuboid(gVertexBuffer * const &vertexBufferManager)
 {
 	//
 	// position  
 	//
 
-	// upper side                                   x                    y                       z
-	vertexBufferManager.AddData(0, config::FIELD_SIZE, config::WALL_HEIGHT, config::WALL_THICKNESS);
-	vertexBufferManager.AddData(0, config::FIELD_SIZE, config::WALL_HEIGHT,                      0);
-	vertexBufferManager.AddData(0,                  0, config::WALL_HEIGHT,                      0);
-	vertexBufferManager.AddData(0,                  0, config::WALL_HEIGHT, config::WALL_THICKNESS);
-	// height related 1. side  												
-	vertexBufferManager.AddData(0, config::FIELD_SIZE,                   0, config::WALL_THICKNESS);
-	vertexBufferManager.AddData(0, config::FIELD_SIZE, config::WALL_HEIGHT, config::WALL_THICKNESS);
-	vertexBufferManager.AddData(0,                  0, config::WALL_HEIGHT, config::WALL_THICKNESS);
-	vertexBufferManager.AddData(0,                  0,                   0, config::WALL_THICKNESS);
-	// height related 2. side												
-	vertexBufferManager.AddData(0,                  0,                   0,                      0);
-	vertexBufferManager.AddData(0,                  0, config::WALL_HEIGHT,                      0);
-	vertexBufferManager.AddData(0, config::FIELD_SIZE, config::WALL_HEIGHT,                      0);
-	vertexBufferManager.AddData(0, config::FIELD_SIZE,                   0,                      0);
-	// thick related 1. side												
-	vertexBufferManager.AddData(0,                  0,                   0, config::WALL_THICKNESS);
-	vertexBufferManager.AddData(0,                  0, config::WALL_HEIGHT, config::WALL_THICKNESS);
-	vertexBufferManager.AddData(0,                  0, config::WALL_HEIGHT,                      0);
-	vertexBufferManager.AddData(0,                  0,                   0,                      0);
-	// thick related 2. side												                     
-	vertexBufferManager.AddData(0, config::FIELD_SIZE,                   0,                      0);
-	vertexBufferManager.AddData(0, config::FIELD_SIZE, config::WALL_HEIGHT,                      0);
-	vertexBufferManager.AddData(0, config::FIELD_SIZE, config::WALL_HEIGHT, config::WALL_THICKNESS);
-	vertexBufferManager.AddData(0, config::FIELD_SIZE,                   0, config::WALL_THICKNESS);
-
+	vertexBufferManager
+		// upper side 
+		->AddData(0, config::FIELD_SIZE, config::WALL_HEIGHT, config::WALL_THICKNESS)
+		->AddData(0, config::FIELD_SIZE, config::WALL_HEIGHT,                      0)
+		->AddData(0,                  0, config::WALL_HEIGHT,                      0)
+		->AddData(0,                  0, config::WALL_HEIGHT, config::WALL_THICKNESS)
+		// height related 1. side  												
+		->AddData(0, config::FIELD_SIZE,                   0, config::WALL_THICKNESS)
+		->AddData(0, config::FIELD_SIZE, config::WALL_HEIGHT, config::WALL_THICKNESS)
+		->AddData(0,                  0, config::WALL_HEIGHT, config::WALL_THICKNESS)
+		->AddData(0,                  0,                   0, config::WALL_THICKNESS)
+		// height related 2. side												
+		->AddData(0,                  0,                   0,                      0)
+		->AddData(0,                  0, config::WALL_HEIGHT,                      0)
+		->AddData(0, config::FIELD_SIZE, config::WALL_HEIGHT,                      0)
+		->AddData(0, config::FIELD_SIZE,                   0,                      0)
+		// thick related 1. side												
+		->AddData(0,                  0,                   0, config::WALL_THICKNESS)
+		->AddData(0,                  0, config::WALL_HEIGHT, config::WALL_THICKNESS)
+		->AddData(0,                  0, config::WALL_HEIGHT,                      0)
+		->AddData(0,                  0,                   0,                      0)
+		// thick related 2. side												                     
+		->AddData(0, config::FIELD_SIZE,                   0,                      0)
+		->AddData(0, config::FIELD_SIZE, config::WALL_HEIGHT,                      0)
+		->AddData(0, config::FIELD_SIZE, config::WALL_HEIGHT, config::WALL_THICKNESS)
+		->AddData(0, config::FIELD_SIZE,                   0, config::WALL_THICKNESS);
+	
+	//
 	// texture
+	//
+
 	const short NUMBER_OF_SIDES = 5;
 	for (short i = 0; i < NUMBER_OF_SIDES; ++i)
 	{
-		vertexBufferManager.AddData(2, 0, 0);
-		vertexBufferManager.AddData(2, 1, 0);
-		vertexBufferManager.AddData(2, 0, 1);
-		vertexBufferManager.AddData(2, 1, 1);
+		vertexBufferManager
+			->AddData(2, 0, 0)
+			->AddData(2, 1, 0)
+			->AddData(2, 0, 1)
+			->AddData(2, 1, 1);
 	}
-
-	wallTextureID = TextureFromFile("texture_wall.jpg");
 }
 
-void createCylinder(gVertexBuffer &vertexBufferManager)
+void createCylinder(gVertexBuffer * const &vertexBufferManager)
 {
-	const float offset = (config::FIELD_SIZE / 2.0f);
+	const float offset = config::FIELD_SIZE / 2.0f;
 
 	//
 	// shield
@@ -89,45 +89,55 @@ void createCylinder(gVertexBuffer &vertexBufferManager)
 
 	for (int i = 0; i <= config::COIN_RESOLUTION; ++i)
 	{
-		const float u = (i / (float) config::COIN_RESOLUTION) * (2 * 3.1415f);
-		// position
+		const float u0 = (i / (float)config::COIN_RESOLUTION);
+		const float u = u0 * 2 * 3.1415f;
+		const float uCos = cosf(u);
+		const float uSin = sinf(u);
 		vertexBufferManager
-			.AddData(0, config::COIN_RADIUS * cosf(u) + offset, 0, config::COIN_RADIUS * sinf(u) + offset);
-		vertexBufferManager
-			.AddData(0, config::COIN_RADIUS * cosf(u) + offset, config::COIN_HEIGHT, config::COIN_RADIUS * sinf(u) + offset);
-		// texture
-		vertexBufferManager.AddData(2, (i / (float)config::COIN_RESOLUTION), 0);
-		vertexBufferManager.AddData(2, (i / (float)config::COIN_RESOLUTION), 1);
+			// position
+			->AddData(0, config::COIN_RADIUS * uCos + offset,                   0, config::COIN_RADIUS * uSin + offset)
+			->AddData(0, config::COIN_RADIUS * uCos + offset, config::COIN_HEIGHT, config::COIN_RADIUS * uSin + offset)
+			// texture
+			->AddData(2, u0, 0)
+			->AddData(2, u0, 1);
 	}
 
 	//
 	// top circle
 	//
 
-	vertexBufferManager.AddData(0, 0 + offset, config::COIN_HEIGHT, offset);  // center position
-	vertexBufferManager.AddData(2, 0.5f, 0.5f); // center texture
+	vertexBufferManager
+		->AddData(0, offset, config::COIN_HEIGHT, offset) // center position
+		->AddData(2, 0.5f, 0.5f); // center texture
 	for (float i = 0; i <= config::COIN_RESOLUTION; ++i)
 	{
 		const float u = -(i / (float)config::COIN_RESOLUTION) * 2 * 3.1415f;
-		// position
-		vertexBufferManager.AddData(0, config::COIN_RADIUS * cosf(u) + offset, config::COIN_HEIGHT, config::COIN_RADIUS * sinf(u) + offset);
-		// texture
-		vertexBufferManager.AddData(2, 0.5f * cosf(u) + 0.5f, 0.5f * sinf(u) + 0.5f);
+		const float uCos = cosf(u);
+		const float uSin = sinf(u);
+		vertexBufferManager
+			// position
+			->AddData(0, config::COIN_RADIUS * uCos + offset, config::COIN_HEIGHT, config::COIN_RADIUS * uSin + offset)
+			// texture
+			->AddData(2, 0.5f * uCos + 0.5f, 0.5f * uSin + 0.5f);
 	}
 
 	//
 	// bottom circle
 	//
 
-	vertexBufferManager.AddData(0, 0 + offset, 0, 0 + offset); // center position
-	vertexBufferManager.AddData(2, 0.5f, 0.5f); // center texture
+	vertexBufferManager
+		->AddData(0, offset, 0, offset) // center position
+		->AddData(2, 0.5f, 0.5f); // center texture
 	for (float i = 0; i <= config::COIN_RESOLUTION; ++i)
 	{
-		const float u = (i / (float)config::COIN_RESOLUTION) * 2 * 3.1415f;
-		// position
-		vertexBufferManager.AddData(2, 0.5f * cosf(u) + 0.5f, 0.5f * sinf(u) + 0.5f);
-		// texture
-		vertexBufferManager.AddData(0, config::COIN_RADIUS * cosf(u) + offset, 0, config::COIN_RADIUS * sinf(u) + offset);
+		const float u = -(i / (float)config::COIN_RESOLUTION) * 2 * 3.1415f;
+		const float uCos = cosf(u);
+		const float uSin = sinf(u);
+		vertexBufferManager
+			// position
+			->AddData(2, 0.5f * uCos + 0.5f, 0.5f * uSin + 0.5f)
+			// texture
+			->AddData(0, config::COIN_RADIUS * uCos + offset, 0, config::COIN_RADIUS * uSin + offset);
 	}
 }
 
@@ -196,15 +206,21 @@ const bool Application::onInitialize()
 	glPolygonMode(GL_BACK, GL_LINE);
 
 	// configure vertex buffer
-	vertexBufferManager.AddAttribute(0, 3); // position
-	vertexBufferManager.AddAttribute(1, 3); // normal
-	vertexBufferManager.AddAttribute(2, 2); // texture
+	vertexBufferManager
+		.AddAttribute(0, 3) // position
+		->AddAttribute(1, 3) // normal
+		->AddAttribute(2, 2); // texture
 
 	// create geometries
-	createQuad(vertexBufferManager, grassTextureID);
-	createCuboid(vertexBufferManager, wallTextureID);
-	createCylinder(vertexBufferManager);
+	createQuad(&vertexBufferManager);
+	createCuboid(&vertexBufferManager);
+	createCylinder(&vertexBufferManager);
 	vertexBufferManager.InitBuffers();
+
+	// load textures
+	grassTextureID = TextureFromFile("texture_grass.jpg");
+	wallTextureID = TextureFromFile("texture_wall.jpg");
+	coinTextureID = TextureFromFile("texture_coin.jpg");
 
 	// load shaders
 	shaderManager.AttachShader(GL_VERTEX_SHADER, "vertex_shader.vert");

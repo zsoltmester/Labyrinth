@@ -41,6 +41,7 @@ void Application::onRender()
 
 			if (fields[i][j].hasCoin())
 			{
+				shaderManager.SetTexture("texture_image", 0, coinTextureID);
 				// TODO
 				vertexBufferManager.Draw(GL_QUAD_STRIP, 24, 2 * (config::COIN_RESOLUTION + 1));
 				vertexBufferManager.Draw(GL_TRIANGLE_FAN, 24 + 2 * (config::COIN_RESOLUTION + 1), config::COIN_RESOLUTION + 2);

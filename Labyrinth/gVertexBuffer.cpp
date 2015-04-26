@@ -23,57 +23,65 @@ void gVertexBuffer::Clean()
 	m_vbo_ids.clear();
 }
 
-void gVertexBuffer::AddAttribute(int _idx, int _comps)
+gVertexBuffer* gVertexBuffer::AddAttribute(int _idx, int _comps)
 {
 	AttribDesc desc(_idx, _comps);
 	m_attribs[_idx] = desc;
+	return this;
 }
 
-void gVertexBuffer::AddData(int _idx, float _x)
+gVertexBuffer* gVertexBuffer::AddData(int _idx, float _x)
 {
 	m_values[_idx].push_back(_x);
+	return this;
 }
 
-void gVertexBuffer::AddData(int _idx, float _x, float _y)
+gVertexBuffer* gVertexBuffer::AddData(int _idx, float _x, float _y)
 {
 	m_values[_idx].push_back(_x);
 	m_values[_idx].push_back(_y);
+	return this;
 }
 
-void gVertexBuffer::AddData(int _idx, float _x, float _y, float _z)
+gVertexBuffer* gVertexBuffer::AddData(int _idx, float _x, float _y, float _z)
 {
 	m_values[_idx].push_back(_x);
 	m_values[_idx].push_back(_y);
 	m_values[_idx].push_back(_z);
+	return this;
 }
 
-void gVertexBuffer::AddData(int _idx, float _x, float _y, float _z, float _w)
+gVertexBuffer* gVertexBuffer::AddData(int _idx, float _x, float _y, float _z, float _w)
 {
 	m_values[_idx].push_back(_x);
 	m_values[_idx].push_back(_y);
 	m_values[_idx].push_back(_z);
 	m_values[_idx].push_back(_w);
+	return this;
 }
 
-void gVertexBuffer::AddData(int _idx, glm::vec2& _v)
+gVertexBuffer* gVertexBuffer::AddData(int _idx, glm::vec2& _v)
 {
 	m_values[_idx].push_back(_v.x);
 	m_values[_idx].push_back(_v.y);
+	return this;
 }
 
-void gVertexBuffer::AddData(int _idx, glm::vec3& _v)
+gVertexBuffer* gVertexBuffer::AddData(int _idx, glm::vec3& _v)
 {
 	m_values[_idx].push_back(_v.x);
 	m_values[_idx].push_back(_v.y);
 	m_values[_idx].push_back(_v.z);
+	return this;
 }
 
-void gVertexBuffer::AddData(int _idx, glm::vec4& _v)
+gVertexBuffer* gVertexBuffer::AddData(int _idx, glm::vec4& _v)
 {
 	m_values[_idx].push_back(_v.x);
 	m_values[_idx].push_back(_v.y);
 	m_values[_idx].push_back(_v.z);
 	m_values[_idx].push_back(_v.w);
+	return this;
 }
 
 void gVertexBuffer::InitBuffers()
@@ -131,30 +139,34 @@ void gVertexBuffer::Off()
 	glBindVertexArray(0);
 }
 
-void gVertexBuffer::AddIndex(unsigned int _a)
+gVertexBuffer* gVertexBuffer::AddIndex(unsigned int _a)
 {
 	m_indices.push_back(_a);
+	return this;
 }
 
-void gVertexBuffer::AddIndex(unsigned int _a, unsigned int _b)
+gVertexBuffer* gVertexBuffer::AddIndex(unsigned int _a, unsigned int _b)
 {
 	m_indices.push_back(_a);
 	m_indices.push_back(_b);
+	return this;
 }
 
-void gVertexBuffer::AddIndex(unsigned int _a, unsigned int _b, unsigned int _c)
+gVertexBuffer* gVertexBuffer::AddIndex(unsigned int _a, unsigned int _b, unsigned int _c)
 {
 	m_indices.push_back(_a);
 	m_indices.push_back(_b);
 	m_indices.push_back(_c);
+	return this;
 }
 
-void gVertexBuffer::AddIndex(unsigned int _a, unsigned int _b, unsigned int _c, unsigned int _d)
+gVertexBuffer* gVertexBuffer::AddIndex(unsigned int _a, unsigned int _b, unsigned int _c, unsigned int _d)
 {
 	m_indices.push_back(_a);
 	m_indices.push_back(_b);
 	m_indices.push_back(_c);
 	m_indices.push_back(_d);
+	return this;
 }
 
 void gVertexBuffer::SetPatchVertices(int _n)

@@ -47,12 +47,13 @@ public:
 
 private: 
 	// managers
-	gCamera			cameraManager;
-	gShaderProgram	shaderManager;
-	gVertexBuffer	vertexBufferManager;
+	gCamera	cameraManager;
+	gShaderProgram shaderManager;
+	gVertexBuffer vertexBufferManager;
 
 	GLuint grassTextureID;
 	GLuint wallTextureID;
+	GLuint coinTextureID;
 
 	Field fields[config::MAP_SIZE][config::MAP_SIZE];
 };
