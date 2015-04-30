@@ -102,16 +102,16 @@
     </Object>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="texture_grass.jpg">
+    <Image Include="texture_coin.bmp">
       <Filter>4 Resource Files</Filter>
     </Image>
-    <Image Include="texture_wall.jpg">
+    <Image Include="texture_diamond.bmp">
       <Filter>4 Resource Files</Filter>
     </Image>
-    <Image Include="texture_coin.jpg">
+    <Image Include="texture_grass.bmp">
       <Filter>4 Resource Files</Filter>
     </Image>
-    <Image Include="texture_diamond.jpg">
+    <Image Include="texture_wall.bmp">
       <Filter>4 Resource Files</Filter>
     </Image>
   </ItemGroup>

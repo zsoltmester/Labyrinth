@@ -208,6 +208,32 @@ int createBottomPyramid(gVertexBuffer * const &vertexBufferManager)
 	return config::DIAMOND_NUMBER_OF_SIDES + 2;
 }
 
+// copied from: http://stackoverflow.com/questions/22058111/opengl-draw-sphere-using-glvertex3f
+int createSphere(gVertexBuffer * const &vertexBufferManager)
+{
+	for (short i = 0; i <= config::SUN_AND_MOON_RESOLUTION; ++i) {
+		float v0 = 3.1415f * (0.5f + (float)(i - 1) / config::SUN_AND_MOON_RESOLUTION);
+		float sinV0 = sinf(v0);
+		float cosV0 = cosf(v0);
+
+		float v1 = 3.1415f * (0.5f + (float)i / config::SUN_AND_MOON_RESOLUTION);
+		float sinV1 = sinf(v1);
+		float cosV1 = cosf(v1);
+
+		for (short j = 0; j <= config::SUN_AND_MOON_RESOLUTION; ++j) {
+			float u = 2 * 3.1415f * (float)(j - 1) / config::SUN_AND_MOON_RESOLUTION;
+			float cosU = cosf(u);
+			float sinU = sinf(u);
+
+			vertexBufferManager
+				->AddData(0, cosU * cosV0, sinU * cosV0, sinV0)
+				->AddData(0, cosU * cosV1, sinU * cosV1, sinV1);
+		}
+	}
+
+	return (config::SUN_AND_MOON_RESOLUTION + 1) * (config::SUN_AND_MOON_RESOLUTION + 1) * 2;
+}
+
 void initAndConfigFields(Field fields[config::MAP_SIZE][config::MAP_SIZE])
 {
 	srand(time(NULL));
@@ -351,13 +377,16 @@ const bool Application::onInitialize()
 	startOfBottomPyramidVertices = startOfTopPyramidVertices + numberOfTopPyramidVertices;
 	numberOfBottomPyramidVertices = createBottomPyramid(&vertexBufferManager);
 
+	startOfSphereVertices = startOfBottomPyramidVertices + numberOfBottomPyramidVertices;
+	numberOfSphereVertices = createSphere(&vertexBufferManager);
+
 	vertexBufferManager.InitBuffers();
 
 	// load textures
-	grassTextureID = TextureFromFile("texture_grass.jpg");
-	wallTextureID = TextureFromFile("texture_wall.jpg");
-	coinTextureID = TextureFromFile("texture_coin.jpg");
-	diamondTextureID = TextureFromFile("texture_diamond.jpg");
+	grassTextureID = TextureFromFile(config::TEXTURE_FILE_NAME_GRASS.c_str());
+	wallTextureID = TextureFromFile(config::TEXTURE_FILE_NAME_WALL.c_str());
+	coinTextureID = TextureFromFile(config::TEXTURE_FILE_NAME_COIN.c_str());
+	diamondTextureID = TextureFromFile(config::TEXTURE_FILE_NAME_DIAMOND.c_str());
 
 	// load shaders
 	shaderManager.AttachShader(GL_VERTEX_SHADER, "vertex_shader.vert");

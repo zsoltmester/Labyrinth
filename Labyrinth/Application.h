@@ -65,6 +65,8 @@ private:
 	int numberOfTopPyramidVertices;
 	int startOfBottomPyramidVertices;
 	int numberOfBottomPyramidVertices;
+	int startOfSphereVertices;
+	int numberOfSphereVertices;
 
 	GLuint grassTextureID;
 	GLuint wallTextureID;
@@ -73,4 +75,3 @@ private:
 
 	Field fields[config::MAP_SIZE][config::MAP_SIZE];
 };
-

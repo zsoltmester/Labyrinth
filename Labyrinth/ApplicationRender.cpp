@@ -22,10 +22,14 @@ void Application::onRender()
 	shaderManager.On();
 	vertexBufferManager.On();
 
+	shaderManager.SetUniform("isTheSunOrTheMoon", 0);
+
 	glm::mat4 matWorld;
 	glm::mat4 mvp;
 
+	//
 	// draw the fields
+	//
 	for (short i = 0; i < config::MAP_SIZE; ++i) 
 	{
 		for (short j = 0; j < config::MAP_SIZE; ++j) 
@@ -110,6 +114,26 @@ void Application::onRender()
 
 		}
 	}
+
+	shaderManager.SetUniform("isTheSunOrTheMoon", 1);
+
+	//
+	// draw the sun
+	//
+
+	const float orbitRadius = (config::MAP_SIZE * config::FIELD_SIZE * config::SUN_AND_MOON_ORBIT_RADIUS_MULTIPLIER) / 2.0f;
+	const float sunRotation = SDL_GetTicks() / 1000.0f * 360.0f / config::SUN_AND_MOON_ANIMATION_LENGTH;
+	const float middleOfTheMap = (config::MAP_SIZE * config::FIELD_SIZE) / 2.0f;
+
+	matWorld = glm::translate<float>(middleOfTheMap, 0, middleOfTheMap) // translate to the middle of the map
+		*glm::rotate<float>(sunRotation, 0, 0, 1) // rotate
+		*glm::translate<float>(0, orbitRadius, 0) // translate up
+		*glm::scale<float>(config::SUN_AND_MOON_SIZE, config::SUN_AND_MOON_SIZE, config::SUN_AND_MOON_SIZE); // set the size
+
+	mvp = cameraManager.GetViewProj() * matWorld;
+	shaderManager.SetUniform("MVP", mvp);
+
+	vertexBufferManager.Draw(GL_QUAD_STRIP, startOfSphereVertices, numberOfSphereVertices);
 
 	vertexBufferManager.Off();
 	shaderManager.Off();
