@@ -392,6 +392,7 @@ const bool Application::onInitialize()
 	shaderManager.AttachShader(GL_VERTEX_SHADER, "vertex_shader.vert");
 	shaderManager.AttachShader(GL_FRAGMENT_SHADER, "fragment_shader.frag");
 	shaderManager.BindAttribLoc(0, "vs_in_position");
+	shaderManager.BindAttribLoc(1, "vs_in_normal");
 	shaderManager.BindAttribLoc(2, "vs_in_texture");
 	if (!shaderManager.LinkProgram())
 	{

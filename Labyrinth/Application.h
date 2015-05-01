@@ -8,6 +8,7 @@
 #include <SDL_opengl.h>
 
 // GLM
+#define GLM_SWIZZLE
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform2.hpp>

@@ -8,9 +8,9 @@ void Application::drawWall(const glm::mat4 matWorld)
 {
 	glm::mat4 mvp = cameraManager.GetViewProj() * matWorld;
 	shaderManager.SetUniform("MVP", mvp);
-	shaderManager.SetTexture("texture_image", 0, wallTextureID);
+	shaderManager.SetTexture("textureImage", 0, wallTextureID);
 
-	vertexBufferManager.Draw(GL_QUADS, startOfCuboidVertices, numberOfCuboidVertices);
+	//vertexBufferManager.Draw(GL_QUADS, startOfCuboidVertices, numberOfCuboidVertices);
 }
 
 void Application::onRender()
@@ -22,10 +22,34 @@ void Application::onRender()
 	shaderManager.On();
 	vertexBufferManager.On();
 
-	shaderManager.SetUniform("isTheSunOrTheMoon", 0);
-
 	glm::mat4 matWorld;
 	glm::mat4 mvp;
+
+	shaderManager.SetUniform("eyePosition", cameraManager.GetEye());
+
+	//
+	// draw the sun
+	//
+
+	shaderManager.SetUniform("isTheSunOrTheMoon", 1);
+
+	const float orbitRadius = (config::MAP_SIZE * config::FIELD_SIZE * config::SUN_AND_MOON_ORBIT_RADIUS_MULTIPLIER) / 2.0f;
+	const float sunRotation = SDL_GetTicks() / 1000.0f * 360.0f / config::SUN_AND_MOON_ANIMATION_LENGTH;
+	const float middleOfTheMap = (config::MAP_SIZE * config::FIELD_SIZE) / 2.0f;
+
+	matWorld = glm::translate<float>(middleOfTheMap, 0, middleOfTheMap) // translate to the middle of the map
+		*glm::rotate<float>(sunRotation, 1, 0, 0) // rotate
+		*glm::translate<float>(0, orbitRadius, 0) // translate up
+		*glm::scale<float>(config::SUN_AND_MOON_SIZE, config::SUN_AND_MOON_SIZE, config::SUN_AND_MOON_SIZE); // set the size
+
+	mvp = cameraManager.GetViewProj() * matWorld;
+	shaderManager.SetUniform("MVP", mvp);
+
+	vertexBufferManager.Draw(GL_QUAD_STRIP, startOfSphereVertices, numberOfSphereVertices);
+
+	glm::vec3 sunCurrentPosition = (matWorld * glm::vec4(0, 0, 0, 1)).xyz;
+	shaderManager.SetUniform("sunPosition", sunCurrentPosition);
+	shaderManager.SetUniform("isTheSunOrTheMoon", 0);
 
 	//
 	// draw the fields
@@ -34,13 +58,15 @@ void Application::onRender()
 	{
 		for (short j = 0; j < config::MAP_SIZE; ++j) 
 		{
-			const glm::mat4 translateToCurrent 
+			glm::mat4 translateToCurrent 
 				= glm::translate<float>(i * config::FIELD_SIZE, 0, j * config::FIELD_SIZE);
 
 			// the grass
 			mvp = cameraManager.GetViewProj() * translateToCurrent;
+
+			shaderManager.SetUniform("world", translateToCurrent);
 			shaderManager.SetUniform("MVP", mvp);
-			shaderManager.SetTexture("texture_image", 0, grassTextureID);
+			shaderManager.SetTexture("textureImage", 0, grassTextureID);
 			vertexBufferManager.Draw(GL_QUADS, startOfQuadVertices, numberOfQuadVertices);
 
 			if (fields[i][j].hasCoin())
@@ -56,11 +82,11 @@ void Application::onRender()
 				mvp = cameraManager.GetViewProj() * matWorld;
 
 				shaderManager.SetUniform("MVP", mvp);
-				shaderManager.SetTexture("texture_image", 0, coinTextureID);
+				shaderManager.SetTexture("textureImage", 0, coinTextureID);
 
-				vertexBufferManager.Draw(GL_QUAD_STRIP, startOfCylinderShieldVertices, numberOfCylinderShieldVertices);
-				vertexBufferManager.Draw(GL_TRIANGLE_FAN, startOfCylinderTopVertices, numberOfCylinderTopVertices);
-				vertexBufferManager.Draw(GL_TRIANGLE_FAN, startOfCylinderBottomVertices, numberOfCylinderBottomVertices);
+				//vertexBufferManager.Draw(GL_QUAD_STRIP, startOfCylinderShieldVertices, numberOfCylinderShieldVertices);
+				//vertexBufferManager.Draw(GL_TRIANGLE_FAN, startOfCylinderTopVertices, numberOfCylinderTopVertices);
+				//vertexBufferManager.Draw(GL_TRIANGLE_FAN, startOfCylinderBottomVertices, numberOfCylinderBottomVertices);
 			}
 
 			if (fields[i][j].hasDiamond())
@@ -74,10 +100,10 @@ void Application::onRender()
 				mvp = cameraManager.GetViewProj() * matWorld;
 
 				shaderManager.SetUniform("MVP", mvp);
-				shaderManager.SetTexture("texture_image", 0, diamondTextureID);
+				shaderManager.SetTexture("textureImage", 0, diamondTextureID);
 
-				vertexBufferManager.Draw(GL_TRIANGLE_FAN, startOfTopPyramidVertices, numberOfTopPyramidVertices);
-				vertexBufferManager.Draw(GL_TRIANGLE_FAN, startOfBottomPyramidVertices, numberOfBottomPyramidVertices);
+				//vertexBufferManager.Draw(GL_TRIANGLE_FAN, startOfTopPyramidVertices, numberOfTopPyramidVertices);
+				//vertexBufferManager.Draw(GL_TRIANGLE_FAN, startOfBottomPyramidVertices, numberOfBottomPyramidVertices);
 			}
 
 			//
@@ -114,26 +140,6 @@ void Application::onRender()
 
 		}
 	}
-
-	shaderManager.SetUniform("isTheSunOrTheMoon", 1);
-
-	//
-	// draw the sun
-	//
-
-	const float orbitRadius = (config::MAP_SIZE * config::FIELD_SIZE * config::SUN_AND_MOON_ORBIT_RADIUS_MULTIPLIER) / 2.0f;
-	const float sunRotation = SDL_GetTicks() / 1000.0f * 360.0f / config::SUN_AND_MOON_ANIMATION_LENGTH;
-	const float middleOfTheMap = (config::MAP_SIZE * config::FIELD_SIZE) / 2.0f;
-
-	matWorld = glm::translate<float>(middleOfTheMap, 0, middleOfTheMap) // translate to the middle of the map
-		*glm::rotate<float>(sunRotation, 0, 0, 1) // rotate
-		*glm::translate<float>(0, orbitRadius, 0) // translate up
-		*glm::scale<float>(config::SUN_AND_MOON_SIZE, config::SUN_AND_MOON_SIZE, config::SUN_AND_MOON_SIZE); // set the size
-
-	mvp = cameraManager.GetViewProj() * matWorld;
-	shaderManager.SetUniform("MVP", mvp);
-
-	vertexBufferManager.Draw(GL_QUAD_STRIP, startOfSphereVertices, numberOfSphereVertices);
 
 	vertexBufferManager.Off();
 	shaderManager.Off();
