@@ -6,6 +6,9 @@ namespace config
 {
 	const bool	IS_DEBUG = true;
 
+	const short SCREEN_RESOLUTION_WIDTH = 1366;
+	const short SCREEN_RESOLUTION_HEIGHT = 768;
+
 	const short	MAP_SIZE = 10; // in task: 50
 
 	const std::string TEXTURE_FILE_NAME_GRASS = "texture_grass.bmp";

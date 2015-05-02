@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "Application.h"
+#include "config.h"
 
 // TODO move these functions to a helper class (name idea: ApplicationHelper)
 // or to the Application
@@ -64,8 +65,8 @@ const int initializeSDL(SDL_Window *&window)
 		"Labyrinth",
 		0,						
 		0,						
-		1366,						
-		768,						
+		config::SCREEN_RESOLUTION_WIDTH,						
+		config::SCREEN_RESOLUTION_HEIGHT,
 		SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_FULLSCREEN);
 
 
