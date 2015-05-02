@@ -29,14 +29,6 @@ void Application::onRender()
 	glm::mat4 mvp;
 
 	shaderManager.SetUniform("eyePosition", cameraManager.GetEye());
-	shaderManager.SetUniform("ambientLightColor", config::AMBIENT_LIGHT_COLOR);
-	shaderManager.SetUniform("ambientLightStrength", config::AMBIENT_LIGHT_STRENGTH);
-	shaderManager.SetUniform("sunDiffuseLightColor", config::SUN_DIFFUSE_LIGHT_COLOR);
-	shaderManager.SetUniform("sunSpecularLightColor", config::SUN_SPECULAR_LIGHT_COLOR);
-	shaderManager.SetUniform("moonDiffuseLightColor", config::MOON_DIFFUSE_LIGHT_COLOR);
-	shaderManager.SetUniform("moonSpecularLightColor", config::MOON_SPECULAR_LIGHT_COLOR);
-	shaderManager.SetUniform("specularLightStrength", config::SPECULAR_LIGHT_STRENGTH);
-	shaderManager.SetUniform("specularLightSize", config::SPECULAR_LIGHT_SIZE);
 
 	//
 	// draw the sun an the moon

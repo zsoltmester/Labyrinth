@@ -206,6 +206,16 @@ const bool Application::onInitialize()
 	{
 		return false;
 	}
+	shaderManager.On();
+	shaderManager.SetUniform("ambientLightColor", config::AMBIENT_LIGHT_COLOR);
+	shaderManager.SetUniform("ambientLightStrength", config::AMBIENT_LIGHT_STRENGTH);
+	shaderManager.SetUniform("sunDiffuseLightColor", config::SUN_DIFFUSE_LIGHT_COLOR);
+	shaderManager.SetUniform("sunSpecularLightColor", config::SUN_SPECULAR_LIGHT_COLOR);
+	shaderManager.SetUniform("moonDiffuseLightColor", config::MOON_DIFFUSE_LIGHT_COLOR);
+	shaderManager.SetUniform("moonSpecularLightColor", config::MOON_SPECULAR_LIGHT_COLOR);
+	shaderManager.SetUniform("specularLightStrength", config::SPECULAR_LIGHT_STRENGTH);
+	shaderManager.SetUniform("specularLightSize", config::SPECULAR_LIGHT_SIZE);
+	shaderManager.Off();
 
 	cameraManager.SetProj(45.0f, config::SCREEN_RESOLUTION_WIDTH / (float)config::SCREEN_RESOLUTION_HEIGHT, 0.01f, 1000.0f);
 

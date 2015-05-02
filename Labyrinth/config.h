@@ -26,7 +26,7 @@ namespace config
 	const float	WALL_HEIGHT = FIELD_SIZE * 1;
 	const float	WALL_THICKNESS = FIELD_SIZE *  0.1f;
 	const float WALL_POSSIBILITY = 0.5f;
-	const bool WITH_DOUBLE_WALL = true;
+	const bool WITH_DOUBLE_WALL = true; // turning off result is a higher performance
 
 	// coin
 	const float COIN_RADIUS = 0.25f;
