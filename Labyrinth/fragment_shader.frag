@@ -10,7 +10,8 @@ out vec4 fs_out_col;
 
 //uniform
 uniform sampler2D textureImage;
-uniform bool isTheSunOrTheMoon;
+uniform bool isTheSun;
+uniform bool isTheSunUp;
 
 uniform vec3 eyePosition;
 uniform vec3 sunPosition;
@@ -31,7 +32,7 @@ float specularLightSize = 24;
 
 void main()
 {
-	if (isTheSunOrTheMoon)
+	if (isTheSun)
 	{
 		fs_out_col = vec4(1, 1, 0, 1); // yellow
 	}
@@ -62,7 +63,13 @@ void main()
 		float si = pow(clamp(dot(eyeDirectionToPosition, r), 0.0f, 1.0f ), specularLightSize);
 		vec4 specular = sunSpecularLightColor * specularLightStrength * si;
 
-
-		fs_out_col = (ambientLight + diffuse + specular) * texture(textureImage, vs_out_texture.st);
-	}
+		if (isTheSunUp)
+		{
+			fs_out_col = (ambientLight + diffuse + specular) * texture(textureImage, vs_out_texture.st);
+		}
+		else
+		{
+			fs_out_col = ambientLight * texture(textureImage, vs_out_texture.st);
+		}
+	} 
 }

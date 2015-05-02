@@ -41,31 +41,51 @@ int createCuboid(gVertexBuffer * const &vertexBufferManager)
 	//
 
 	vertexBufferManager
-		// upper side 
+		// upper side
 		->AddData(0, config::FIELD_SIZE, config::WALL_HEIGHT, config::WALL_THICKNESS)
-		->AddData(0, config::FIELD_SIZE, config::WALL_HEIGHT,                      0)
-		->AddData(0,                  0, config::WALL_HEIGHT,                      0)
-		->AddData(0,                  0, config::WALL_HEIGHT, config::WALL_THICKNESS)
-		// height related 1. side  												
-		->AddData(0, config::FIELD_SIZE,                   0, config::WALL_THICKNESS)
+		->AddData(0, config::FIELD_SIZE, config::WALL_HEIGHT, 0)
+		->AddData(0, 0, config::WALL_HEIGHT, 0)
+		->AddData(0, 0, config::WALL_HEIGHT, config::WALL_THICKNESS)
+		->AddData(1, 0, 1, 0)
+		->AddData(1, 0, 1, 0)
+		->AddData(1, 0, 1, 0)
+		->AddData(1, 0, 1, 0)
+		// height related 1. side
+		->AddData(0, config::FIELD_SIZE, 0, config::WALL_THICKNESS)
 		->AddData(0, config::FIELD_SIZE, config::WALL_HEIGHT, config::WALL_THICKNESS)
-		->AddData(0,                  0, config::WALL_HEIGHT, config::WALL_THICKNESS)
-		->AddData(0,                  0,                   0, config::WALL_THICKNESS)
-		// height related 2. side												
-		->AddData(0,                  0,                   0,                      0)
-		->AddData(0,                  0, config::WALL_HEIGHT,                      0)
-		->AddData(0, config::FIELD_SIZE, config::WALL_HEIGHT,                      0)
-		->AddData(0, config::FIELD_SIZE,                   0,                      0)
-		// thick related 1. side												
-		->AddData(0,                  0,                   0, config::WALL_THICKNESS)
-		->AddData(0,                  0, config::WALL_HEIGHT, config::WALL_THICKNESS)
-		->AddData(0,                  0, config::WALL_HEIGHT,                      0)
-		->AddData(0,                  0,                   0,                      0)
-		// thick related 2. side												                     
-		->AddData(0, config::FIELD_SIZE,                   0,                      0)
-		->AddData(0, config::FIELD_SIZE, config::WALL_HEIGHT,                      0)
+		->AddData(0, 0, config::WALL_HEIGHT, config::WALL_THICKNESS)
+		->AddData(0, 0, 0, config::WALL_THICKNESS)
+		->AddData(1, 0, 0, 1)
+		->AddData(1, 0, 0, 1)
+		->AddData(1, 0, 0, 1)
+		->AddData(1, 0, 0, 1)
+		// height related 2. side
+		->AddData(0, 0, 0, 0)
+		->AddData(0, 0, config::WALL_HEIGHT, 0)
+		->AddData(0, config::FIELD_SIZE, config::WALL_HEIGHT, 0)
+		->AddData(0, config::FIELD_SIZE, 0, 0)
+		->AddData(1, 0, 0, -1)
+		->AddData(1, 0, 0, -1)
+		->AddData(1, 0, 0, -1)
+		->AddData(1, 0, 0, -1)
+		// thick related 1. side
+		->AddData(0, 0, 0, config::WALL_THICKNESS)
+		->AddData(0, 0, config::WALL_HEIGHT, config::WALL_THICKNESS)
+		->AddData(0, 0, config::WALL_HEIGHT, 0)
+		->AddData(0, 0, 0, 0)
+		->AddData(1, -1, 0, 0)
+		->AddData(1, -1, 0, 0)
+		->AddData(1, -1, 0, 0)
+		->AddData(1, -1, 0, 0)
+		// thick related 2. side
+		->AddData(0, config::FIELD_SIZE, 0, 0)
+		->AddData(0, config::FIELD_SIZE, config::WALL_HEIGHT, 0)
 		->AddData(0, config::FIELD_SIZE, config::WALL_HEIGHT, config::WALL_THICKNESS)
-		->AddData(0, config::FIELD_SIZE,                   0, config::WALL_THICKNESS);
+		->AddData(0, config::FIELD_SIZE, 0, config::WALL_THICKNESS)
+		->AddData(1, 1, 0, 0)
+		->AddData(1, 1, 0, 0)
+		->AddData(1, 1, 0, 0)
+		->AddData(1, 1, 0, 0);
 	
 	//
 	// texture
@@ -86,27 +106,53 @@ int createCuboid(gVertexBuffer * const &vertexBufferManager)
 
 int createCylinderShield(gVertexBuffer * const &vertexBufferManager)
 {
-	const float offset = config::FIELD_SIZE / 2.0f;
+	glm::vec3 lastVertex;
 
+	const float halfThickness = config::COIN_THICKNESS / 2.0f;
 	for (int i = 0; i <= config::COIN_RESOLUTION; ++i)
 	{
 		const float u0 = (i / (float)config::COIN_RESOLUTION);
 		const float u = -u0 * 2 * 3.1415f;
 		const float uCos = cosf(u);
 		const float uSin = sinf(u);
+
+		const glm::vec3 firstNewVertex = glm::vec3(-halfThickness, config::COIN_RADIUS * (uCos + 1), config::COIN_RADIUS * uSin);
+		const glm::vec3 secondNewVertex = glm::vec3(halfThickness, config::COIN_RADIUS * (uCos + 1), config::COIN_RADIUS * uSin);
+
 		vertexBufferManager
 			// position
-			->AddData(0, 
-				offset - config::COIN_THICKNESS,
-				config::COIN_RADIUS * uCos - offset, 
-				config::COIN_RADIUS * (uSin + 1))
-			->AddData(0, 
-				offset,
-				config::COIN_RADIUS * uCos - offset, 
-				config::COIN_RADIUS * (uSin + 1))
+			->AddData(0, firstNewVertex.x, firstNewVertex.y, firstNewVertex.z)
+			->AddData(0, secondNewVertex.x, secondNewVertex.y, secondNewVertex.z)
 			// texture
 			->AddData(2, u0, 0)
 			->AddData(2, u0, 1);
+
+		if (i == 0)
+		{
+			// normals will handle in the next iteration
+			lastVertex = secondNewVertex;
+			continue;
+		}
+
+		const glm::vec3 normal = -glm::cross(firstNewVertex - secondNewVertex, firstNewVertex - lastVertex);
+
+		// normal
+		if (i == 1)
+		{
+			vertexBufferManager
+				->AddData(1, normal.x, normal.y, normal.z)
+				->AddData(1, normal.x, normal.y, normal.z)
+				->AddData(1, normal.x, normal.y, normal.z)
+				->AddData(1, normal.x, normal.y, normal.z);
+		}
+		else
+		{
+			vertexBufferManager
+				->AddData(1, normal.x, normal.y, normal.z)
+				->AddData(1, normal.x, normal.y, normal.z);
+		}
+
+		lastVertex = secondNewVertex;
 	}
 
 	return 2 * (config::COIN_RESOLUTION + 1);
@@ -114,10 +160,11 @@ int createCylinderShield(gVertexBuffer * const &vertexBufferManager)
 
 int createCylinderTop(gVertexBuffer * const &vertexBufferManager)
 {
-	const float offset = config::FIELD_SIZE / 2.0f;
+	const float halfThickness = config::COIN_THICKNESS / 2.0f;
 
 	vertexBufferManager
-		->AddData(0, offset, -offset, config::COIN_RADIUS) // center position
+		->AddData(0, halfThickness, config::COIN_RADIUS, 0) // center position
+		->AddData(1, 1, 0, 0) // center normal
 		->AddData(2, 0.5f, 0.5f); // center texture
 	for (float i = 0; i <= config::COIN_RESOLUTION; ++i)
 	{
@@ -127,9 +174,11 @@ int createCylinderTop(gVertexBuffer * const &vertexBufferManager)
 		vertexBufferManager
 			// position
 			->AddData(0,
-			offset,
-			config::COIN_RADIUS * uCos - offset,
-			config::COIN_RADIUS * (uSin + 1))
+			halfThickness,
+			config::COIN_RADIUS * (uCos + 1 ),
+			config::COIN_RADIUS * uSin)
+			// normal
+			->AddData(1, 1, 0, 0)
 			// texture
 			->AddData(2, 0.5f * uCos + 0.5f, 0.5f * uSin + 0.5f);
 	}
@@ -139,10 +188,11 @@ int createCylinderTop(gVertexBuffer * const &vertexBufferManager)
 
 int createCylinderBottom(gVertexBuffer * const &vertexBufferManager)
 {
-	const float offset = config::FIELD_SIZE / 2.0f;
+	const float halfThickness = config::COIN_THICKNESS / 2.0f;
 
 	vertexBufferManager
-		->AddData(0, offset - config::COIN_THICKNESS, -offset, config::COIN_RADIUS) // center position
+		->AddData(0, -halfThickness, config::COIN_RADIUS, 0) // center position
+		->AddData(1, -1, 0, 0) // center normal
 		->AddData(2, 0.5f, 0.5f); // center texture
 	for (float i = 0; i <= config::COIN_RESOLUTION; ++i)
 	{
@@ -152,9 +202,11 @@ int createCylinderBottom(gVertexBuffer * const &vertexBufferManager)
 		vertexBufferManager
 			// texture
 			->AddData(0,
-			offset - config::COIN_THICKNESS,
-			config::COIN_RADIUS * uCos - offset,
-			config::COIN_RADIUS * (uSin + 1))
+			-halfThickness,
+			config::COIN_RADIUS * (uCos + 1),
+			config::COIN_RADIUS * uSin)
+			// normal
+			->AddData(1, -1, 0, 0)
 			// position
 			->AddData(2, 0.5f * uCos + 0.5f, 0.5f * uSin + 0.5f);
 	}
@@ -164,22 +216,52 @@ int createCylinderBottom(gVertexBuffer * const &vertexBufferManager)
 
 int createTopPyramid(gVertexBuffer * const &vertexBufferManager) 
 {
+	const glm::vec3 topVertex = glm::vec3(0, config::DIAMOND_BOTTOM_HEIGHT + config::DIAMOND_TOP_HEIGHT, 0);
+	glm::vec3 lastVertex;
+
 	vertexBufferManager
-		->AddData(0, 0, config::DIAMOND_BOTTOM_HEIGHT + config::DIAMOND_TOP_HEIGHT, 0) // center position
+		->AddData(0, topVertex.x, topVertex.y, topVertex.z) // center position
 		->AddData(2, 0.5f, 0.5f); // center texture
 	for (float i = 0; i <= config::DIAMOND_NUMBER_OF_SIDES; ++i)
 	{
 		const float u = -(i / (float)config::DIAMOND_NUMBER_OF_SIDES) * 2 * 3.1415f;
 		const float uCos = cosf(u);
 		const float uSin = sinf(u);
-		vertexBufferManager
-			// position
-			->AddData(0,
+
+		const glm::vec3 newVertex = glm::vec3(
 			config::DIAMOND_RADIUS * uCos,
 			config::DIAMOND_BOTTOM_HEIGHT,
-			config::DIAMOND_RADIUS * uSin)
+			config::DIAMOND_RADIUS * uSin);
+
+		vertexBufferManager
+			// position
+			->AddData(0, newVertex.x, newVertex.y, newVertex.z)
 			// texture
 			->AddData(2, 0.5f * uCos + 0.5f, 0.5f * uSin + 0.5f);
+
+		if (i == 0)
+		{
+			// normals will handle in the next iteration
+			lastVertex = newVertex;
+			continue;
+		}
+
+		const glm::vec3 normal = -glm::cross(topVertex - newVertex, topVertex - lastVertex);
+
+		if (i == 1) 
+		{
+			vertexBufferManager
+				->AddData(1, normal.x, normal.y, normal.z)
+				->AddData(1, normal.x, normal.y, normal.z)
+				->AddData(1, normal.x, normal.y, normal.z);
+		}
+		else
+		{
+			vertexBufferManager
+				->AddData(1, normal.x, normal.y, normal.z);
+		}
+
+		lastVertex = newVertex;
 	}
 
 	return config::DIAMOND_NUMBER_OF_SIDES + 2;
@@ -187,47 +269,84 @@ int createTopPyramid(gVertexBuffer * const &vertexBufferManager)
 
 int createBottomPyramid(gVertexBuffer * const &vertexBufferManager)
 {
+	const glm::vec3 bottomVertex = glm::vec3(0, 0, 0);
+	glm::vec3 lastVertex;
+
 	vertexBufferManager
-		->AddData(0, 0, 0, 0) // center position
+		->AddData(0, bottomVertex.x, bottomVertex.y, bottomVertex.z) // center position
 		->AddData(2, 0.5f, 0.5f); // center texture
 	for (float i = 0; i <= config::DIAMOND_NUMBER_OF_SIDES; ++i)
 	{
 		const float u = (i / (float)config::DIAMOND_NUMBER_OF_SIDES) * 2 * 3.1415f;
 		const float uCos = cosf(u);
 		const float uSin = sinf(u);
-		vertexBufferManager
-			// position
-			->AddData(0,
+
+		const glm::vec3 newVertex = glm::vec3(
 			config::DIAMOND_RADIUS * uCos,
 			config::DIAMOND_BOTTOM_HEIGHT,
-			config::DIAMOND_RADIUS * uSin)
+			config::DIAMOND_RADIUS * uSin);
+
+		vertexBufferManager
+			// position
+			->AddData(0, newVertex.x, newVertex.y, newVertex.z)
 			// texture
 			->AddData(2, 0.5f * uCos + 0.5f, 0.5f * uSin + 0.5f);
+
+		if (i == 0)
+		{
+			// normals will handle in the next iteration
+			lastVertex = newVertex;
+			continue;
+		}
+
+		const glm::vec3 normal = -glm::cross(bottomVertex - newVertex, bottomVertex - lastVertex);
+
+		if (i == 1)
+		{
+			vertexBufferManager
+				->AddData(1, normal.x, normal.y, normal.z)
+				->AddData(1, normal.x, normal.y, normal.z)
+				->AddData(1, normal.x, normal.y, normal.z);
+		}
+		else
+		{
+			vertexBufferManager
+				->AddData(1, normal.x, normal.y, normal.z);
+		}
+
+		lastVertex = newVertex;
 	}
 
 	return config::DIAMOND_NUMBER_OF_SIDES + 2;
 }
 
-// copied from: http://stackoverflow.com/questions/22058111/opengl-draw-sphere-using-glvertex3f
+// based on: http://stackoverflow.com/questions/22058111/opengl-draw-sphere-using-glvertex3f
 int createSphere(gVertexBuffer * const &vertexBufferManager)
 {
 	for (short i = 0; i <= config::SUN_AND_MOON_RESOLUTION; ++i) {
-		float v0 = 3.1415f * (0.5f + (float)(i - 1) / config::SUN_AND_MOON_RESOLUTION);
-		float sinV0 = sinf(v0);
-		float cosV0 = cosf(v0);
-
-		float v1 = 3.1415f * (0.5f + (float)i / config::SUN_AND_MOON_RESOLUTION);
-		float sinV1 = sinf(v1);
-		float cosV1 = cosf(v1);
+		const float v0 = 3.1415f * (0.5f + (float)(i - 1) / config::SUN_AND_MOON_RESOLUTION);
+		const float sinV0 = sinf(v0);
+		const float cosV0 = cosf(v0);
+		
+		const float v1 = 3.1415f * (0.5f + (float)i / config::SUN_AND_MOON_RESOLUTION);
+		const float sinV1 = sinf(v1);
+		const float cosV1 = cosf(v1);
 
 		for (short j = 0; j <= config::SUN_AND_MOON_RESOLUTION; ++j) {
-			float u = 2 * 3.1415f * (float)(j - 1) / config::SUN_AND_MOON_RESOLUTION;
-			float cosU = cosf(u);
-			float sinU = sinf(u);
+			const float u = 2 * 3.1415f * (float)(j - 1) / config::SUN_AND_MOON_RESOLUTION;
+			const float cosU = cosf(u);
+			const float sinU = sinf(u);
+
+			glm::vec3 firstNewVertex = glm::vec3(cosU * cosV0, sinU * cosV0, sinV0);
+			glm::vec3 secondNewVertex = glm::vec3(cosU * cosV1, sinU * cosV1, sinV1);
 
 			vertexBufferManager
-				->AddData(0, cosU * cosV0, sinU * cosV0, sinV0)
-				->AddData(0, cosU * cosV1, sinU * cosV1, sinV1);
+				// position
+				->AddData(0, firstNewVertex)
+				->AddData(0, secondNewVertex)
+				// normal
+				->AddData(1, firstNewVertex)
+				->AddData(1, secondNewVertex);
 		}
 	}
 
@@ -344,7 +463,6 @@ const bool Application::onInitialize()
 
 	// turn off back face and turn on lines for them
 	glEnable(GL_CULL_FACE);
-	glPolygonMode(GL_BACK, GL_LINE);
 
 	// configure vertex buffer
 	vertexBufferManager

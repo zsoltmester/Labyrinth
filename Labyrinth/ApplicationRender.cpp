@@ -4,13 +4,15 @@
 
 #include "config.h"
 
-void Application::drawWall(const glm::mat4 matWorld)
+void Application::drawWall(glm::mat4 matWorld)
 {
 	glm::mat4 mvp = cameraManager.GetViewProj() * matWorld;
+	shaderManager.SetUniform("world", matWorld);
+	shaderManager.SetUniform("worldInverseTranspose", glm::transpose(glm::inverse(matWorld)));
 	shaderManager.SetUniform("MVP", mvp);
 	shaderManager.SetTexture("textureImage", 0, wallTextureID);
 
-	//vertexBufferManager.Draw(GL_QUADS, startOfCuboidVertices, numberOfCuboidVertices);
+	vertexBufferManager.Draw(GL_QUADS, startOfCuboidVertices, numberOfCuboidVertices);
 }
 
 void Application::onRender()
@@ -31,7 +33,7 @@ void Application::onRender()
 	// draw the sun
 	//
 
-	shaderManager.SetUniform("isTheSunOrTheMoon", 1);
+	shaderManager.SetUniform("isTheSun", 1);
 
 	const float orbitRadius = (config::MAP_SIZE * config::FIELD_SIZE * config::SUN_AND_MOON_ORBIT_RADIUS_MULTIPLIER) / 2.0f;
 	const float sunRotation = SDL_GetTicks() / 1000.0f * 360.0f / config::SUN_AND_MOON_ANIMATION_LENGTH;
@@ -49,7 +51,8 @@ void Application::onRender()
 
 	glm::vec3 sunCurrentPosition = (matWorld * glm::vec4(0, 0, 0, 1)).xyz;
 	shaderManager.SetUniform("sunPosition", sunCurrentPosition);
-	shaderManager.SetUniform("isTheSunOrTheMoon", 0);
+	shaderManager.SetUniform("isTheSunUp", sunCurrentPosition.y > 0);
+	shaderManager.SetUniform("isTheSun", 0);
 
 	//
 	// draw the fields
@@ -61,50 +64,17 @@ void Application::onRender()
 			glm::mat4 translateToCurrent 
 				= glm::translate<float>(i * config::FIELD_SIZE, 0, j * config::FIELD_SIZE);
 
+			//
 			// the grass
+			//
+
 			mvp = cameraManager.GetViewProj() * translateToCurrent;
 
 			shaderManager.SetUniform("world", translateToCurrent);
+			shaderManager.SetUniform("worldInverseTranspose", glm::transpose(glm::inverse(translateToCurrent)));
 			shaderManager.SetUniform("MVP", mvp);
 			shaderManager.SetTexture("textureImage", 0, grassTextureID);
 			vertexBufferManager.Draw(GL_QUADS, startOfQuadVertices, numberOfQuadVertices);
-
-			if (fields[i][j].hasCoin())
-			{
-				const float coinRotation = SDL_GetTicks() / 1000.0f * 360.0f / config::COIN_ANIMATION_LENGTH;
-				const float offset = config::FIELD_SIZE / 2.0f;
-
-				matWorld = translateToCurrent
-					* glm::translate<float>(offset - config::COIN_THICKNESS / 2.0f, 0, offset) // translate back from the origin
-					* glm::rotate<float>(coinRotation, 0, 1, 0) // for animation
-					* glm::translate<float>(config::COIN_THICKNESS / 2.0f - offset, 0, -offset) // translate to the origin
-					* glm::rotate<float>(-90, 1, 0, 0); // turn to horizontal
-				mvp = cameraManager.GetViewProj() * matWorld;
-
-				shaderManager.SetUniform("MVP", mvp);
-				shaderManager.SetTexture("textureImage", 0, coinTextureID);
-
-				//vertexBufferManager.Draw(GL_QUAD_STRIP, startOfCylinderShieldVertices, numberOfCylinderShieldVertices);
-				//vertexBufferManager.Draw(GL_TRIANGLE_FAN, startOfCylinderTopVertices, numberOfCylinderTopVertices);
-				//vertexBufferManager.Draw(GL_TRIANGLE_FAN, startOfCylinderBottomVertices, numberOfCylinderBottomVertices);
-			}
-
-			if (fields[i][j].hasDiamond())
-			{
-				const float diamondRotation = SDL_GetTicks() / 1000.0f * 360.0f / config::DIAMOND_ANIMATION_LENGTH;
-				const float offset = config::FIELD_SIZE / 2.0f;
-				
-				matWorld = translateToCurrent
-					* glm::translate<float>(offset, 0, offset) // translate to the middle
-					* glm::rotate<float>(diamondRotation, 0, 1, 0); // for animation
-				mvp = cameraManager.GetViewProj() * matWorld;
-
-				shaderManager.SetUniform("MVP", mvp);
-				shaderManager.SetTexture("textureImage", 0, diamondTextureID);
-
-				//vertexBufferManager.Draw(GL_TRIANGLE_FAN, startOfTopPyramidVertices, numberOfTopPyramidVertices);
-				//vertexBufferManager.Draw(GL_TRIANGLE_FAN, startOfBottomPyramidVertices, numberOfBottomPyramidVertices);
-			}
 
 			//
 			// the walls
@@ -138,6 +108,50 @@ void Application::onRender()
 				drawWall(matWorld);
 			}
 
+			if (!fields[i][j].hasCoin() && !fields[i][j].hasDiamond())
+			{
+				continue;
+			}
+
+			//
+			// coin and diamond
+			//
+
+			const float offset = config::FIELD_SIZE / 2.0f;
+			matWorld = translateToCurrent
+				* glm::translate<float>(offset, 0, offset); // translate to the middle of the field
+
+			// rotate
+			if (fields[i][j].hasCoin())
+			{
+				const float coinRotation = SDL_GetTicks() / 1000.0f * 360.0f / config::COIN_ANIMATION_LENGTH;
+				matWorld *= glm::rotate<float>(coinRotation, 0, 1, 0); // for animation
+			}
+			else if (fields[i][j].hasDiamond())
+			{
+				const float diamondRotation = SDL_GetTicks() / 1000.0f * 360.0f / config::DIAMOND_ANIMATION_LENGTH;
+				matWorld *= glm::rotate<float>(diamondRotation, 0, 1, 0); // for animation
+			}
+
+			mvp = cameraManager.GetViewProj() * matWorld;
+			shaderManager.SetUniform("world", matWorld);
+			shaderManager.SetUniform("worldInverseTranspose", glm::transpose(glm::inverse(matWorld)));
+			shaderManager.SetUniform("MVP", mvp);
+
+			// set the texture and draw
+			if (fields[i][j].hasCoin())
+			{
+				shaderManager.SetTexture("textureImage", 0, coinTextureID);
+				vertexBufferManager.Draw(GL_QUAD_STRIP, startOfCylinderShieldVertices, numberOfCylinderShieldVertices);
+				vertexBufferManager.Draw(GL_TRIANGLE_FAN, startOfCylinderTopVertices, numberOfCylinderTopVertices);
+				vertexBufferManager.Draw(GL_TRIANGLE_FAN, startOfCylinderBottomVertices, numberOfCylinderBottomVertices);
+			}
+			else if (fields[i][j].hasDiamond())
+			{
+				shaderManager.SetTexture("textureImage", 0, diamondTextureID);
+				vertexBufferManager.Draw(GL_TRIANGLE_FAN, startOfTopPyramidVertices, numberOfTopPyramidVertices);
+				vertexBufferManager.Draw(GL_TRIANGLE_FAN, startOfBottomPyramidVertices, numberOfBottomPyramidVertices);
+			}
 		}
 	}
 
