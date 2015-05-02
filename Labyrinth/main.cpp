@@ -62,11 +62,11 @@ const int initializeSDL(SDL_Window *&window)
 	// create window
 	window = SDL_CreateWindow( // TODO
 		"Labyrinth",
-		100,						
-		100,						
-		640,						
-		480,						
-		SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+		0,						
+		0,						
+		1366,						
+		768,						
+		SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_FULLSCREEN);
 
 
 	if (window == 0)
