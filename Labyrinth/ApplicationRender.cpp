@@ -11,6 +11,7 @@ void Application::drawWall(glm::mat4 matWorld)
 	shaderManager.SetUniform("worldInverseTranspose", glm::transpose(glm::inverse(matWorld)));
 	shaderManager.SetUniform("MVP", mvp);
 	shaderManager.SetTexture("textureImage", 0, wallTextureID);
+	shaderManager.SetUniform("isASpecularMaterial", false);
 
 	vertexBufferManager.Draw(GL_QUADS, startOfCuboidVertices, numberOfCuboidVertices);
 }
@@ -28,12 +29,18 @@ void Application::onRender()
 	glm::mat4 mvp;
 
 	shaderManager.SetUniform("eyePosition", cameraManager.GetEye());
+	shaderManager.SetUniform("ambientLightColor", config::AMBIENT_LIGHT_COLOR);
+	shaderManager.SetUniform("ambientLightStrength", config::AMBIENT_LIGHT_STRENGTH);
+	shaderManager.SetUniform("sunDiffuseLightColor", config::SUN_DIFFUSE_LIGHT_COLOR);
+	shaderManager.SetUniform("sunSpecularLightColor", config::SUN_SPECULAR_LIGHT_COLOR);
+	shaderManager.SetUniform("specularLightStrength", config::SPECULAR_LIGHT_STRENGTH);
+	shaderManager.SetUniform("specularLightSize", config::SPECULAR_LIGHT_SIZE);
 
 	//
 	// draw the sun
 	//
 
-	shaderManager.SetUniform("isTheSun", 1);
+	shaderManager.SetUniform("isThisTheSunsVertex", true);
 
 	const float orbitRadius = (config::MAP_SIZE * config::FIELD_SIZE * config::SUN_AND_MOON_ORBIT_RADIUS_MULTIPLIER) / 2.0f;
 	const float sunRotation = SDL_GetTicks() / 1000.0f * 360.0f / config::SUN_AND_MOON_ANIMATION_LENGTH;
@@ -52,11 +59,13 @@ void Application::onRender()
 	glm::vec3 sunCurrentPosition = (matWorld * glm::vec4(0, 0, 0, 1)).xyz;
 	shaderManager.SetUniform("sunPosition", sunCurrentPosition);
 	shaderManager.SetUniform("isTheSunUp", sunCurrentPosition.y > 0);
-	shaderManager.SetUniform("isTheSun", 0);
+	shaderManager.SetUniform("diffuseLightStrength", config::SUN_DIFFUSE_LIGHT_MAX_STRENGTH * (sunCurrentPosition.y / orbitRadius));
+	shaderManager.SetUniform("isThisTheSunsVertex", false);
 
 	//
 	// draw the fields
 	//
+
 	for (short i = 0; i < config::MAP_SIZE; ++i) 
 	{
 		for (short j = 0; j < config::MAP_SIZE; ++j) 
@@ -74,6 +83,7 @@ void Application::onRender()
 			shaderManager.SetUniform("worldInverseTranspose", glm::transpose(glm::inverse(translateToCurrent)));
 			shaderManager.SetUniform("MVP", mvp);
 			shaderManager.SetTexture("textureImage", 0, grassTextureID);
+			shaderManager.SetUniform("isASpecularMaterial", false);
 			vertexBufferManager.Draw(GL_QUADS, startOfQuadVertices, numberOfQuadVertices);
 
 			//
@@ -137,6 +147,7 @@ void Application::onRender()
 			shaderManager.SetUniform("world", matWorld);
 			shaderManager.SetUniform("worldInverseTranspose", glm::transpose(glm::inverse(matWorld)));
 			shaderManager.SetUniform("MVP", mvp);
+			shaderManager.SetUniform("isASpecularMaterial", true);
 
 			// set the texture and draw
 			if (fields[i][j].hasCoin())

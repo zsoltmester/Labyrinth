@@ -10,29 +10,28 @@ out vec4 fs_out_col;
 
 //uniform
 uniform sampler2D textureImage;
-uniform bool isTheSun;
+
+uniform bool isThisTheSunsVertex;
 uniform bool isTheSunUp;
 
 uniform vec3 eyePosition;
 uniform vec3 sunPosition;
 
-// TODO move these to config
-uniform vec4 ambientLightColor = vec4(1, 1, 1, 1);
-uniform vec4 sunDiffuseLightColor = vec4(1, 1, 0, 1);
-uniform vec4 sunSpecularLightColor = vec4(1, 1, 0, 1);
+uniform vec4 ambientLightColor;
+uniform vec4 sunDiffuseLightColor;
+uniform vec4 sunSpecularLightColor;
 
-// TODO move these to config
-uniform vec4 ambientLightStrength = vec4(0.1f, 0.1f, 0.1f, 1); 
-uniform vec4 diffuseLightStrength = vec4(0.5f, 0.5f, 0.5f, 1);
-uniform vec4 specularLightStrength = vec4(1, 1, 1, 1);
+uniform vec4 ambientLightStrength; 
+uniform vec4 diffuseLightStrength;
+uniform vec4 specularLightStrength;
 
-// file visibility
-// TODO move this to config
-float specularLightSize = 24;
+uniform float specularLightSize;
+uniform bool isASpecularMaterial;
+
 
 void main()
 {
-	if (isTheSun)
+	if (isThisTheSunsVertex)
 	{
 		fs_out_col = vec4(1, 1, 0, 1); // yellow
 	}
@@ -63,13 +62,17 @@ void main()
 		float si = pow(clamp(dot(eyeDirectionToPosition, r), 0.0f, 1.0f ), specularLightSize);
 		vec4 specular = sunSpecularLightColor * specularLightStrength * si;
 
+		vec4 light = ambientLight;
+
 		if (isTheSunUp)
 		{
-			fs_out_col = (ambientLight + diffuse + specular) * texture(textureImage, vs_out_texture.st);
+			light += diffuse;
+			if (isASpecularMaterial)
+			{
+				light += specular;
+			}
 		}
-		else
-		{
-			fs_out_col = ambientLight * texture(textureImage, vs_out_texture.st);
-		}
+		
+		fs_out_col = light * texture(textureImage, vs_out_texture.st);
 	} 
 }
