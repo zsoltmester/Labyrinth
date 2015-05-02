@@ -62,25 +62,25 @@ void initAndConfigFields(Field fields[config::MAP_SIZE][config::MAP_SIZE])
 			if (!fields[i][j].hasLeftWall() && rand() % correctedPossibility == 0)
 			{
 				fields[i][j].setHasLeftWall(true);
-				if (!fields[i][j].isOnLeftBorder()) fields[i][j - 1].setHasRightWall(true);
+				if (config::WITH_DOUBLE_WALL && !fields[i][j].isOnLeftBorder()) fields[i][j - 1].setHasRightWall(true);
 			}
 
 			if (!fields[i][j].hasRightWall() && rand() % correctedPossibility == 0)
 			{
 				fields[i][j].setHasRightWall(true);
-				if (!fields[i][j].isOnRightBorder()) fields[i][j + 1].setHasLeftWall(true);
+				if (config::WITH_DOUBLE_WALL && !fields[i][j].isOnRightBorder()) fields[i][j + 1].setHasLeftWall(true);
 			}
 
 			if (!fields[i][j].hasUpperWall() && rand() % correctedPossibility == 0)
 			{
 				fields[i][j].setHasUpperWall(true);
-				if (!fields[i][j].isOnUpperBorder()) fields[i + 1][j].setHasLowerWall(true);
+				if (config::WITH_DOUBLE_WALL && !fields[i][j].isOnUpperBorder()) fields[i + 1][j].setHasLowerWall(true);
 			}
 			
 			if (!fields[i][j].hasLowerWall() && rand() % correctedPossibility == 0)
 			{
 				fields[i][j].setHasLowerWall(true);
-				if (!fields[i][j].isOnLowerBorder()) fields[i - 1][j].setHasUpperWall(true);
+				if (config::WITH_DOUBLE_WALL && !fields[i][j].isOnLowerBorder()) fields[i - 1][j].setHasUpperWall(true);
 			}
 
 			//

@@ -33,21 +33,25 @@ void Application::onRender()
 	shaderManager.SetUniform("ambientLightStrength", config::AMBIENT_LIGHT_STRENGTH);
 	shaderManager.SetUniform("sunDiffuseLightColor", config::SUN_DIFFUSE_LIGHT_COLOR);
 	shaderManager.SetUniform("sunSpecularLightColor", config::SUN_SPECULAR_LIGHT_COLOR);
+	shaderManager.SetUniform("moonDiffuseLightColor", config::MOON_DIFFUSE_LIGHT_COLOR);
+	shaderManager.SetUniform("moonSpecularLightColor", config::MOON_SPECULAR_LIGHT_COLOR);
 	shaderManager.SetUniform("specularLightStrength", config::SPECULAR_LIGHT_STRENGTH);
 	shaderManager.SetUniform("specularLightSize", config::SPECULAR_LIGHT_SIZE);
 
 	//
-	// draw the sun
+	// draw the sun an the moon
 	//
+
+	const float orbitRadius = (config::MAP_SIZE * config::FIELD_SIZE * config::SUN_AND_MOON_ORBIT_RADIUS_MULTIPLIER) / 2.0f;
+	const float rotation = SDL_GetTicks() / 1000.0f * 360.0f / config::SUN_AND_MOON_ANIMATION_LENGTH;
+	const float middleOfTheMap = (config::MAP_SIZE * config::FIELD_SIZE) / 2.0f;
+	
+	// sun
 
 	shaderManager.SetUniform("isThisTheSunsVertex", true);
 
-	const float orbitRadius = (config::MAP_SIZE * config::FIELD_SIZE * config::SUN_AND_MOON_ORBIT_RADIUS_MULTIPLIER) / 2.0f;
-	const float sunRotation = SDL_GetTicks() / 1000.0f * 360.0f / config::SUN_AND_MOON_ANIMATION_LENGTH;
-	const float middleOfTheMap = (config::MAP_SIZE * config::FIELD_SIZE) / 2.0f;
-
 	matWorld = glm::translate<float>(middleOfTheMap, 0, middleOfTheMap) // translate to the middle of the map
-		*glm::rotate<float>(sunRotation, 1, 0, 0) // rotate
+		*glm::rotate<float>(rotation, 1, 0, 0) // rotate
 		*glm::translate<float>(0, orbitRadius, 0) // translate up
 		*glm::scale<float>(config::SUN_AND_MOON_SIZE, config::SUN_AND_MOON_SIZE, config::SUN_AND_MOON_SIZE); // set the size
 
@@ -56,12 +60,43 @@ void Application::onRender()
 
 	vertexBufferManager.Draw(GL_QUAD_STRIP, startOfSphereVertices, numberOfSphereVertices);
 
-	glm::vec3 sunCurrentPosition = (matWorld * glm::vec4(0, 0, 0, 1)).xyz;
+	const glm::vec3 sunCurrentPosition = (matWorld * glm::vec4(0, 0, 0, 1)).xyz;
+	const bool isTheSunUp = sunCurrentPosition.y > 0;
 	shaderManager.SetUniform("sunPosition", sunCurrentPosition);
-	shaderManager.SetUniform("isTheSunUp", sunCurrentPosition.y > 0);
-	shaderManager.SetUniform("diffuseLightStrength", config::SUN_DIFFUSE_LIGHT_MAX_STRENGTH * (sunCurrentPosition.y / orbitRadius));
+	shaderManager.SetUniform("isTheSunUp", isTheSunUp);
+	if (isTheSunUp)
+	{
+		shaderManager.SetUniform("diffuseLightStrength",
+			config::SUN_DIFFUSE_LIGHT_MAX_STRENGTH * (sunCurrentPosition.y / orbitRadius));
+	}
 	shaderManager.SetUniform("isThisTheSunsVertex", false);
 
+	
+	// moon
+
+	shaderManager.SetUniform("isThisTheMoonsVertex", true);
+
+	matWorld = glm::translate<float>(middleOfTheMap, 0, middleOfTheMap) // translate to the middle of the map
+		*glm::rotate<float>(rotation, 1, 0, 0) // rotate
+		*glm::translate<float>(0, -orbitRadius, 0) // translate down
+		*glm::scale<float>(config::SUN_AND_MOON_SIZE, config::SUN_AND_MOON_SIZE, config::SUN_AND_MOON_SIZE); // set the size
+
+	mvp = cameraManager.GetViewProj() * matWorld;
+	shaderManager.SetUniform("MVP", mvp);
+
+	vertexBufferManager.Draw(GL_QUAD_STRIP, startOfSphereVertices, numberOfSphereVertices);
+
+	const glm::vec3 moonCurrentPosition = (matWorld * glm::vec4(0, 0, 0, 1)).xyz;
+	const bool isTheMoonUp = moonCurrentPosition.y > 0;
+	shaderManager.SetUniform("moonPosition", moonCurrentPosition);
+	shaderManager.SetUniform("isTheMoonUp", isTheMoonUp);
+	if (isTheMoonUp)
+	{
+		shaderManager.SetUniform("diffuseLightStrength", 
+			config::MOON_DIFFUSE_LIGHT_MAX_STRENGTH * (moonCurrentPosition.y / orbitRadius));
+	}
+	shaderManager.SetUniform("isThisTheMoonsVertex", false);
+	
 	//
 	// draw the fields
 	//
@@ -149,7 +184,7 @@ void Application::onRender()
 			shaderManager.SetUniform("MVP", mvp);
 			shaderManager.SetUniform("isASpecularMaterial", true);
 
-			// set the texture and draw
+			// set the texture and draw the geometry
 			if (fields[i][j].hasCoin())
 			{
 				shaderManager.SetTexture("textureImage", 0, coinTextureID);
