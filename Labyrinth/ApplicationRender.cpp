@@ -6,14 +6,27 @@
 
 void Application::drawWall(glm::mat4 matWorld)
 {
-	glm::mat4 mvp = cameraManager.GetViewProj() * matWorld;
 	shaderManager.SetUniform("world", matWorld);
 	shaderManager.SetUniform("worldInverseTranspose", glm::transpose(glm::inverse(matWorld)));
-	shaderManager.SetUniform("MVP", mvp);
+	shaderManager.SetUniform("MVP", cameraManager.GetViewProj() * matWorld);
 	shaderManager.SetTexture("textureImage", 0, wallTextureID);
 	shaderManager.SetUniform("isASpecularMaterial", false);
-
 	vertexBufferManager.Draw(GL_QUADS, startOfCuboidVertices, numberOfCuboidVertices);
+}
+
+const glm::vec3 Application::drawOrb(const float orbitRadius)
+{
+	const float rotation = SDL_GetTicks() / 1000.0f * 360.0f / config::SUN_AND_MOON_ANIMATION_LENGTH;
+	const float middleOfTheMap = (config::MAP_SIZE * config::FIELD_SIZE) / 2.0f;
+
+	const glm::mat4 matWorld = glm::translate<float>(middleOfTheMap, 0, middleOfTheMap) // translate to the middle of the map
+		*glm::rotate<float>(rotation, 1, 0, 0) // rotate
+		*glm::translate<float>(0, orbitRadius, 0) // translate up or down
+		*glm::scale<float>(config::SUN_AND_MOON_SIZE, config::SUN_AND_MOON_SIZE, config::SUN_AND_MOON_SIZE); // set the size
+
+	shaderManager.SetUniform("MVP", cameraManager.GetViewProj() * matWorld);
+	vertexBufferManager.Draw(GL_QUAD_STRIP, startOfSphereVertices, numberOfSphereVertices);
+	return (matWorld * glm::vec4(0, 0, 0, 1)).xyz;
 }
 
 void Application::onRender()
@@ -31,32 +44,16 @@ void Application::onRender()
 	shaderManager.SetUniform("eyePosition", cameraManager.GetEye());
 
 	//
-	// draw the sun an the moon
+	// draw the sun and the moon
 	//
 
 	const float orbitRadius = (config::MAP_SIZE * config::FIELD_SIZE * config::SUN_AND_MOON_ORBIT_RADIUS_MULTIPLIER) / 2.0f;
-	const float rotation = SDL_GetTicks() / 1000.0f * 360.0f / config::SUN_AND_MOON_ANIMATION_LENGTH;
-	const float middleOfTheMap = (config::MAP_SIZE * config::FIELD_SIZE) / 2.0f;
 	
 	// sun
-
 	shaderManager.SetUniform("isThisTheSunsVertex", true);
-
-	matWorld = glm::translate<float>(middleOfTheMap, 0, middleOfTheMap) // translate to the middle of the map
-		*glm::rotate<float>(rotation, 1, 0, 0) // rotate
-		*glm::translate<float>(0, orbitRadius, 0) // translate up
-		*glm::scale<float>(config::SUN_AND_MOON_SIZE, config::SUN_AND_MOON_SIZE, config::SUN_AND_MOON_SIZE); // set the size
-
-	mvp = cameraManager.GetViewProj() * matWorld;
-	shaderManager.SetUniform("MVP", mvp);
-
-	vertexBufferManager.Draw(GL_QUAD_STRIP, startOfSphereVertices, numberOfSphereVertices);
-
-	const glm::vec3 sunCurrentPosition = (matWorld * glm::vec4(0, 0, 0, 1)).xyz;
-	const bool isTheSunUp = sunCurrentPosition.y > 0;
+	const glm::vec3 sunCurrentPosition = drawOrb(orbitRadius);
 	shaderManager.SetUniform("sunPosition", sunCurrentPosition);
-	shaderManager.SetUniform("isTheSunUp", isTheSunUp);
-	if (isTheSunUp)
+	if (sunCurrentPosition.y > 0)
 	{
 		shaderManager.SetUniform("diffuseLightStrength",
 			config::SUN_DIFFUSE_LIGHT_MAX_STRENGTH * (sunCurrentPosition.y / orbitRadius));
@@ -65,24 +62,10 @@ void Application::onRender()
 
 	
 	// moon
-
 	shaderManager.SetUniform("isThisTheMoonsVertex", true);
-
-	matWorld = glm::translate<float>(middleOfTheMap, 0, middleOfTheMap) // translate to the middle of the map
-		*glm::rotate<float>(rotation, 1, 0, 0) // rotate
-		*glm::translate<float>(0, -orbitRadius, 0) // translate down
-		*glm::scale<float>(config::SUN_AND_MOON_SIZE, config::SUN_AND_MOON_SIZE, config::SUN_AND_MOON_SIZE); // set the size
-
-	mvp = cameraManager.GetViewProj() * matWorld;
-	shaderManager.SetUniform("MVP", mvp);
-
-	vertexBufferManager.Draw(GL_QUAD_STRIP, startOfSphereVertices, numberOfSphereVertices);
-
-	const glm::vec3 moonCurrentPosition = (matWorld * glm::vec4(0, 0, 0, 1)).xyz;
-	const bool isTheMoonUp = moonCurrentPosition.y > 0;
+	const glm::vec3 moonCurrentPosition = drawOrb(-orbitRadius);
 	shaderManager.SetUniform("moonPosition", moonCurrentPosition);
-	shaderManager.SetUniform("isTheMoonUp", isTheMoonUp);
-	if (isTheMoonUp)
+	if (moonCurrentPosition.y > 0)
 	{
 		shaderManager.SetUniform("diffuseLightStrength", 
 			config::MOON_DIFFUSE_LIGHT_MAX_STRENGTH * (moonCurrentPosition.y / orbitRadius));
@@ -97,18 +80,16 @@ void Application::onRender()
 	{
 		for (short j = 0; j < config::MAP_SIZE; ++j) 
 		{
-			glm::mat4 translateToCurrent 
-				= glm::translate<float>(i * config::FIELD_SIZE, 0, j * config::FIELD_SIZE);
+			const glm::mat4 translateToCurrent = 
+				glm::translate<float>(i * config::FIELD_SIZE, 0, j * config::FIELD_SIZE);
 
 			//
 			// the grass
 			//
 
-			mvp = cameraManager.GetViewProj() * translateToCurrent;
-
 			shaderManager.SetUniform("world", translateToCurrent);
 			shaderManager.SetUniform("worldInverseTranspose", glm::transpose(glm::inverse(translateToCurrent)));
-			shaderManager.SetUniform("MVP", mvp);
+			shaderManager.SetUniform("MVP", cameraManager.GetViewProj() * translateToCurrent);
 			shaderManager.SetTexture("textureImage", 0, grassTextureID);
 			shaderManager.SetUniform("isASpecularMaterial", false);
 			vertexBufferManager.Draw(GL_QUADS, startOfQuadVertices, numberOfQuadVertices);
@@ -170,10 +151,9 @@ void Application::onRender()
 				matWorld *= glm::rotate<float>(diamondRotation, 0, 1, 0); // for animation
 			}
 
-			mvp = cameraManager.GetViewProj() * matWorld;
 			shaderManager.SetUniform("world", matWorld);
 			shaderManager.SetUniform("worldInverseTranspose", glm::transpose(glm::inverse(matWorld)));
-			shaderManager.SetUniform("MVP", mvp);
+			shaderManager.SetUniform("MVP", cameraManager.GetViewProj() * matWorld);
 			shaderManager.SetUniform("isASpecularMaterial", true);
 
 			// set the texture and draw the geometry

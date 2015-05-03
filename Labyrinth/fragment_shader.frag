@@ -9,12 +9,11 @@ in vec2 vs_out_texture;
 out vec4 fs_out_col;
 
 //uniform
+
 uniform sampler2D textureImage;
 
 uniform bool isThisTheSunsVertex;
 uniform bool isThisTheMoonsVertex;
-uniform bool isTheSunUp;
-uniform bool isTheMoonUp;
 
 uniform vec3 eyePosition;
 uniform vec3 sunPosition;
@@ -47,6 +46,9 @@ void main()
 	}
 	else
 	{
+		bool isTheSunUp = sunPosition.y > 0;
+		bool isTheMoonUp = moonPosition.y > 0;
+
 		vec3 currentPosition = isTheMoonUp ? moonPosition : sunPosition;
 		vec4 diffuseLightColor = isTheMoonUp ? moonDiffuseLightColor : sunDiffuseLightColor;
 		vec4 specularLightColor = isTheMoonUp ? moonSpecularLightColor : sunSpecularLightColor;

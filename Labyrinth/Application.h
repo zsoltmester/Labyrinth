@@ -45,6 +45,7 @@ public:
 
 	//helpers
 	void drawWall(glm::mat4 matWorld);
+	const glm::vec3 drawOrb(const float orbitRadius);
 
 private: 
 	// managers

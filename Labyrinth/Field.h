@@ -52,16 +52,16 @@ public:
 	void setHasDiamond(const bool hasDiamond);
 
 private:
-	bool _hasLeftWall	= false;
-	bool _hasRightWall	= false;
-	bool _hasUpperWall	= false;
-	bool _hasLowerWall	= false;
+	bool _hasLeftWall = false;
+	bool _hasRightWall = false;
+	bool _hasUpperWall = false;
+	bool _hasLowerWall = false;
 		 
-	bool _isOnLeftBorder  = false;
+	bool _isOnLeftBorder = false;
 	bool _isOnRightBorder = false;
 	bool _isOnUpperBorder = false;
 	bool _isOnLowerBorder = false;
 		 
-	bool _hasCoin		= false;
-	bool _hasDiamond	= false;
+	bool _hasCoin = false;
+	bool _hasDiamond = false;
 };

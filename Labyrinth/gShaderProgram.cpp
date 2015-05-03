@@ -211,7 +211,7 @@ void gShaderProgram::SetUniform(const char* _uniform, const glm::vec4& _vec)
 	glUniform4fv( loc, 1, &_vec[0] );
 }
 
-void gShaderProgram::SetUniform(const char* _uniform, glm::mat4& _mat)
+void gShaderProgram::SetUniform(const char* _uniform, const glm::mat4& _mat)
 {
 	GLint loc = getLocation(_uniform);
 	glUniformMatrix4fv( loc, 1, GL_FALSE, &(_mat[0][0]) );

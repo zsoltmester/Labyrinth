@@ -193,7 +193,7 @@ void CylinderGeometryHelper::initializeShield()
 	glm::vec3 lastVertex;
 
 	const float halfThickness = config::COIN_THICKNESS / 2.0f;
-	for (int i = 0; i <= config::COIN_RESOLUTION; ++i)
+	for (short i = 0; i <= config::COIN_RESOLUTION; ++i)
 	{
 		const float u0 = (i / (float)config::COIN_RESOLUTION);
 		const float u = -u0 * 2 * 3.1415f;
@@ -248,7 +248,7 @@ void CylinderGeometryHelper::initializeBottom()
 		->AddData(0, -halfThickness, config::COIN_RADIUS, 0) // center position
 		->AddData(1, -1, 0, 0) // center normal
 		->AddData(2, 0.5f, 0.5f); // center texture
-	for (float i = 0; i <= config::COIN_RESOLUTION; ++i)
+	for (short i = 0; i <= config::COIN_RESOLUTION; ++i)
 	{
 		const float u = -(i / (float)config::COIN_RESOLUTION) * 2 * 3.1415f;
 		const float uCos = cosf(u);
@@ -274,7 +274,7 @@ void CylinderGeometryHelper::initializeTop()
 		->AddData(0, halfThickness, config::COIN_RADIUS, 0) // center position
 		->AddData(1, 1, 0, 0) // center normal
 		->AddData(2, 0.5f, 0.5f); // center texture
-	for (float i = 0; i <= config::COIN_RESOLUTION; ++i)
+	for (short i = 0; i <= config::COIN_RESOLUTION; ++i)
 	{
 		const float u = (i / (float)config::COIN_RESOLUTION) * 2 * 3.1415f;
 		const float uCos = cosf(u);
@@ -337,7 +337,7 @@ void DiamondGeometryHelper::initializeBottomPyramid()
 	vertexBufferManager
 		->AddData(0, bottomVertex.x, bottomVertex.y, bottomVertex.z) // center position
 		->AddData(2, 0.5f, 0.5f); // center texture
-	for (float i = 0; i <= config::DIAMOND_NUMBER_OF_SIDES; ++i)
+	for (short i = 0; i <= config::DIAMOND_NUMBER_OF_SIDES; ++i)
 	{
 		const float u = (i / (float)config::DIAMOND_NUMBER_OF_SIDES) * 2 * 3.1415f;
 		const float uCos = cosf(u);
@@ -388,7 +388,7 @@ void DiamondGeometryHelper::initializeTopPyramid()
 	vertexBufferManager
 		->AddData(0, topVertex.x, topVertex.y, topVertex.z) // center position
 		->AddData(2, 0.5f, 0.5f); // center texture
-	for (float i = 0; i <= config::DIAMOND_NUMBER_OF_SIDES; ++i)
+	for (short i = 0; i <= config::DIAMOND_NUMBER_OF_SIDES; ++i)
 	{
 		const float u = -(i / (float)config::DIAMOND_NUMBER_OF_SIDES) * 2 * 3.1415f;
 		const float uCos = cosf(u);
