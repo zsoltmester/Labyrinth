@@ -33,28 +33,31 @@ uniform vec4 specularLightStrength;
 uniform float specularLightSize;
 uniform bool isASpecularMaterial;
 
+uniform bool isThisAFieldWithAPortal = false;
+uniform vec3 portalLightSourcePosition;
+
 
 void main()
 {
 	if (isThisTheSunsVertex)
 	{
-		fs_out_col = vec4(1, 1, 0, 1); // yellow
+		fs_out_col = vec4(1, 1, 0, 1); // TODO move to the config
 	}
 	else if (isThisTheMoonsVertex)
 	{
-		fs_out_col = vec4(0.5f, 0.5f, 0.5f, 1); // grey
+		fs_out_col = vec4(0.5f, 0.5f, 0.5f, 1); // TODO move to the config
 	}
 	else
 	{
 		bool isTheSunUp = sunPosition.y > 0;
 		bool isTheMoonUp = moonPosition.y > 0;
 
-		vec3 currentPosition = isTheMoonUp ? moonPosition : sunPosition;
+		vec3 orbPosition = isTheMoonUp ? moonPosition : sunPosition;
 		vec4 diffuseLightColor = isTheMoonUp ? moonDiffuseLightColor : sunDiffuseLightColor;
 		vec4 specularLightColor = isTheMoonUp ? moonSpecularLightColor : sunSpecularLightColor;
 
 		vec3 normal = normalize(vs_out_normal);
-		vec3 lightDirectionToPosition = normalize(currentPosition - vs_out_position);
+		vec3 lightDirectionToPosition = normalize(orbPosition - vs_out_position);
 
 		//
 		// ambient light
@@ -87,6 +90,32 @@ void main()
 			{
 				light += specular;
 			}
+		}
+
+		//
+		// portal
+		//
+
+		if (isThisAFieldWithAPortal)
+		{
+			lightDirectionToPosition = normalize(portalLightSourcePosition - vs_out_position);
+
+			// diffuse light
+			di = clamp(dot(lightDirectionToPosition, normal), 0.0f, 1.0f);
+			diffuse = vec4(1, 0, 0, 1) * di; // TODO move to the config
+
+			// specular light
+			r = reflect(-lightDirectionToPosition, normal);
+			si = pow(clamp(dot(eyeDirectionToPosition, r), 0.0f, 1.0f ), specularLightSize);
+			specular = vec4(1, 0, 0, 1) * si; // TODO move to the config
+
+			vec4 portalLight = diffuse;
+			if (isASpecularMaterial)
+			{
+				portalLight += specular;
+			}
+
+			light += portalLight;
 		}
 		
 		fs_out_col = light * texture(textureImage, vs_out_texture.st);

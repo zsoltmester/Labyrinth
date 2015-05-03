@@ -83,6 +83,19 @@ void Application::onRender()
 			const glm::mat4 translateToCurrent = 
 				glm::translate<float>(i * config::FIELD_SIZE, 0, j * config::FIELD_SIZE);
 
+			// check if it's a portal
+			if (fields[i][j].hasPortal(Field::PortalType::START) || fields[i][j].hasPortal(Field::PortalType::END))
+			{
+				shaderManager.SetUniform("isThisAFieldWithAPortal", true);
+				const float middleOfTheField = config::FIELD_SIZE / 2.0f;
+				shaderManager.SetUniform("portalLightSourcePosition", 
+					(translateToCurrent * glm::vec4(middleOfTheField, config::WALL_HEIGHT, middleOfTheField, 1)).xyz);
+			} 
+			else
+			{
+				shaderManager.SetUniform("isThisAFieldWithAPortal", false);
+			}
+
 			//
 			// the grass
 			//

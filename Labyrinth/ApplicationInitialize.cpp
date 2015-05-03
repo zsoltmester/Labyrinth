@@ -16,23 +16,27 @@
 void initAndConfigFields(Field fields[config::MAP_SIZE][config::MAP_SIZE])
 {
 	srand(time(NULL));
-
+	short i;
+	short j;
+	
+	// coins place
 	std::set<std::pair<short, short>> coinsPlace;
 	while (coinsPlace.size() < config::NUMBER_OF_COINS)
 	{
-		const short i = rand() % config::MAP_SIZE;
-		const short j = rand() % config::MAP_SIZE;
+		i = rand() % config::MAP_SIZE;
+		j = rand() % config::MAP_SIZE;
 		if (coinsPlace.find(std::pair<short, short>(i, j)) == coinsPlace.end())
 		{
 			coinsPlace.insert(std::pair<short, short>(i, j));
 		}
 	}
 
+	// diamonds place
 	std::set<std::pair<short, short>> diamondsPlace;
 	while (diamondsPlace.size() < config::NUMBER_OF_DIAMONDS)
 	{
-		const short i = rand() % config::MAP_SIZE;
-		const short j = rand() % config::MAP_SIZE;
+		i = rand() % config::MAP_SIZE;
+		j = rand() % config::MAP_SIZE;
 		if ((coinsPlace.find(std::pair<short, short>(i, j)) == coinsPlace.end())
 				&& (diamondsPlace.find(std::pair<short, short>(i, j)) == diamondsPlace.end()))
 		{
@@ -40,8 +44,29 @@ void initAndConfigFields(Field fields[config::MAP_SIZE][config::MAP_SIZE])
 		}
 	}
 
-	const short correctedPossibility = 1.0f / (config::WALL_POSSIBILITY / 2.0f);
+	// start portal place
+	std::pair<short, short> startPortalPlace;
+	do
+	{
+		i = rand() % config::MAP_SIZE;
+		j = rand() % config::MAP_SIZE;
+	} while ((coinsPlace.find(std::pair<short, short>(i, j)) != coinsPlace.end())
+		|| (diamondsPlace.find(std::pair<short, short>(i, j)) != diamondsPlace.end()));
+	startPortalPlace = std::pair<short, short>(i, j);
+	
+	// end portal place
+	std::pair<short, short> endPortalPlace;
+	do
+	{
+		i = rand() % config::MAP_SIZE;
+		j = rand() % config::MAP_SIZE;
+	} while ((coinsPlace.find(std::pair<short, short>(i, j)) != coinsPlace.end())
+		|| (diamondsPlace.find(std::pair<short, short>(i, j)) != diamondsPlace.end())
+		|| startPortalPlace == endPortalPlace);
+	endPortalPlace = std::pair<short, short>(i, j);
 
+	// set fields attributes
+	const short correctedPossibility = 1.0f / (config::WALL_POSSIBILITY / 2.0f);
 	for (short i = 0; i < config::MAP_SIZE; ++i)
 	{
 		for (short j = 0; j < config::MAP_SIZE; ++j)
@@ -99,6 +124,19 @@ void initAndConfigFields(Field fields[config::MAP_SIZE][config::MAP_SIZE])
 			if (diamondsPlace.find(std::pair<short, short>(i, j)) != diamondsPlace.end())
 			{
 				fields[i][j].setHasDiamond(true);
+			}
+
+			//
+			// portal
+			//
+
+			if (startPortalPlace == std::pair<short, short>(i, j))
+			{
+				fields[i][j].setHasPortal(Field::PortalType::START);
+			} 
+			else if (endPortalPlace == std::pair<short, short>(i, j))
+			{
+				fields[i][j].setHasPortal(Field::PortalType::END);
 			}
 		}
 	}

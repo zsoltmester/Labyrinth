@@ -3,6 +3,14 @@
 class Field
 {
 public:
+
+	enum PortalType
+	{
+		START, END, NONE
+	};
+
+	// TODO refactor the wall setter with enum
+
 	/*
 	Wall between (0, 0, 0) and (qs, 0, 0), where qs is the quad size.
 	*/
@@ -51,6 +59,12 @@ public:
 	const bool hasDiamond() const;
 	void setHasDiamond(const bool hasDiamond);
 
+	/*
+	Returns true if the field contains the specified portal.
+	*/
+	const bool hasPortal(const PortalType type) const;
+	void setHasPortal(const PortalType type);
+
 private:
 	bool _hasLeftWall = false;
 	bool _hasRightWall = false;
@@ -64,4 +78,6 @@ private:
 		 
 	bool _hasCoin = false;
 	bool _hasDiamond = false;
+
+	PortalType _portal = NONE;
 };

@@ -99,3 +99,14 @@ void Field::setHasDiamond(const bool hasDiamond)
 {
 	_hasDiamond = hasDiamond;
 }
+
+
+const bool Field::hasPortal(const PortalType portal) const
+{
+	return _portal == portal;
+}
+
+void Field::setHasPortal(const PortalType portal)
+{
+	_portal = portal;
+}
