@@ -19,7 +19,7 @@ namespace config
 	const std::string TEXTURE_FILE_NAME_DIAMOND = "texture_diamond.bmp";
 
 	// map
-	const short	MAP_SIZE = 10; // in task: 50
+	const short	MAP_SIZE = 50; // in task: 50
 	const float	FIELD_SIZE = 1.0f;
 
 	// wall
@@ -35,7 +35,7 @@ namespace config
 	// the coin's shield will build up with N cuboid
 	// and the top and bottom circles with N triangle
 	const short COIN_RESOLUTION = 20;
-	const short NUMBER_OF_COINS = 10; // in task: 100
+	const short NUMBER_OF_COINS = 100; // in task: 100
 
 	// diamond
 	const float DIAMOND_BOTTOM_HEIGHT = 0.75f;
@@ -43,11 +43,11 @@ namespace config
 	const float DIAMOND_RADIUS = 0.25f;
 	const short DIAMOND_NUMBER_OF_SIDES = 6;
 	const float DIAMOND_ANIMATION_LENGTH = 5;
-	const short NUMBER_OF_DIAMONDS = 4; // in task: 10
+	const short NUMBER_OF_DIAMONDS = 10; // in task: 10
 
 	// sun and moon
 	const short SUN_AND_MOON_RESOLUTION = 20;
-	const float SUN_AND_MOON_SIZE = 0.25f; // default: 1
+	const float SUN_AND_MOON_SIZE = 1; // default: 1
 	const float SUN_AND_MOON_ORBIT_RADIUS_MULTIPLIER = 1.1f;
 	const float SUN_AND_MOON_ANIMATION_LENGTH = 30;
 

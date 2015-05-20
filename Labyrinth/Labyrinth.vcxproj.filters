@@ -72,6 +72,9 @@
     <ClCompile Include="GeometryHelper.cpp">
       <Filter>1 Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>1 Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gCamera.h">
@@ -99,6 +102,9 @@
       <Filter>2 Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GeometryHelper.h">
+      <Filter>2 Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
       <Filter>2 Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -336,6 +336,7 @@ void DiamondGeometryHelper::initializeBottomPyramid()
 
 	vertexBufferManager
 		->AddData(0, bottomVertex.x, bottomVertex.y, bottomVertex.z) // center position
+		->AddData(1, 0, -1, 0) // center normal
 		->AddData(2, 0.5f, 0.5f); // center texture
 	for (short i = 0; i <= config::DIAMOND_NUMBER_OF_SIDES; ++i)
 	{
@@ -367,7 +368,6 @@ void DiamondGeometryHelper::initializeBottomPyramid()
 		{
 			vertexBufferManager
 				->AddData(1, normal.x, normal.y, normal.z)
-				->AddData(1, normal.x, normal.y, normal.z)
 				->AddData(1, normal.x, normal.y, normal.z);
 		}
 		else
@@ -387,6 +387,7 @@ void DiamondGeometryHelper::initializeTopPyramid()
 
 	vertexBufferManager
 		->AddData(0, topVertex.x, topVertex.y, topVertex.z) // center position
+		->AddData(1, 0, 1, 0) // center normal
 		->AddData(2, 0.5f, 0.5f); // center texture
 	for (short i = 0; i <= config::DIAMOND_NUMBER_OF_SIDES; ++i)
 	{
@@ -417,7 +418,6 @@ void DiamondGeometryHelper::initializeTopPyramid()
 		if (i == 1)
 		{
 			vertexBufferManager
-				->AddData(1, normal.x, normal.y, normal.z)
 				->AddData(1, normal.x, normal.y, normal.z)
 				->AddData(1, normal.x, normal.y, normal.z);
 		}

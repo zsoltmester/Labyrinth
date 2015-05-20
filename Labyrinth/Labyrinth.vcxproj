@@ -92,6 +92,7 @@
     <ClCompile Include="ApplicationEvents.cpp" />
     <ClCompile Include="ApplicationRender.cpp" />
     <ClCompile Include="ApplicationUpdate.cpp" />
+    <ClCompile Include="Character.cpp" />
     <ClCompile Include="config.h" />
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="gCamera.cpp" />
@@ -104,6 +105,7 @@
     <ClCompile Include="ObjParser_OGL3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Character.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="gCamera.h" />
     <ClInclude Include="GeometryHelper.h" />
