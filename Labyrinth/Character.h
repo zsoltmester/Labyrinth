@@ -47,17 +47,51 @@ public:
 	// Turns the character right
 	void turnRight();
 
-	// Return true, if the character is on move, otherwise false
-	bool isMoving() const;
+	// Return true, if the character is moving forward, otherwise false
+	bool isMovingForward() const;
 
-	// Set, if the character is on move or not
-	void setMoving(bool);
+	// Set, if the character is moving forward or not
+	void setMovingForward(bool);
+
+	// Return true, if the character is moving backward, otherwise false
+	bool isMovingBackward() const;
+
+	// Set, if the character is moving backward or not
+	void setMovingBackward(bool);
+
+	// Return true, if the character is turning left, otherwise false
+	bool isTurningLeft() const;
+
+	// Set, if the character is turning left or not
+	void setTurningLeft(bool);
+
+	// Return true, if the character is turning right, otherwise false
+	bool isTurningRight() const;
+
+	// Set, if the character is turning right or not
+	void setTurningRight(bool);
+
+	// Returns the animation current length
+	int getAnimationTime() const;
+
+	// Sets the animation current length
+	void setAnimationTime(int);
+
+	// Returns if the character is animation currently
+	bool isAnimating() const;
+
+	// Turn off the animation state
+	void turnOffAnimation();
 
 private:
 	
 	Position _position;
 	Direction _direction;
-	bool _isMoving;
+	bool _isMovingForward;
+	bool _isMovingBackward;
+	bool _isTurningLeft;
+	bool _isTurningRight;
+	int _animationTime;
 };
 
 

@@ -7,7 +7,11 @@
 Character::Character(Character::Position position, Direction direction) 
 	: _position(position), _direction(direction)
 {
-	_isMoving = false;
+	_isMovingForward = false;
+	_isMovingBackward = false;
+	_isTurningLeft = false;
+	_isTurningRight = false;
+	_animationTime = 0;
 }
 
 Character::~Character()
@@ -100,14 +104,64 @@ void Character::turnRight()
 	}
 }
 
-bool Character::isMoving() const
+bool Character::isMovingForward() const
 {
-	return _isMoving;
+	return _isMovingForward;
+}
+void Character::setMovingForward(bool isMovingForward)
+{
+	_isMovingForward = isMovingForward;
+}
+bool Character::isMovingBackward() const
+{
+	return _isMovingBackward;
+}
+void Character::setMovingBackward(bool isMovingBackward)
+{
+	_isMovingBackward = isMovingBackward;
+}
+bool Character::isTurningLeft() const
+{
+	return _isTurningLeft;
+}
+void Character::setTurningLeft(bool isTurningLeft)
+{
+	_isTurningLeft = isTurningLeft;
+}
+bool Character::isTurningRight() const
+{
+	return _isTurningRight;
+}
+void Character::setTurningRight(bool isTurningRight)
+{
+	_isTurningRight = isTurningRight;
 }
 
-void Character::setMoving(bool isMoving)
+// Returns the animation current length
+int Character::getAnimationTime() const
 {
-	_isMoving = isMoving;
+	return _animationTime;
+}
+
+// Sets the animation current length
+void Character::setAnimationTime(int animationTime)
+{
+	_animationTime = animationTime;
+}
+
+
+bool Character::isAnimating() const
+{
+	return isMovingForward() || isMovingBackward() || isTurningLeft() || isTurningRight();
+}
+
+void Character::turnOffAnimation()
+{
+	setMovingForward(false);
+	setMovingBackward(false);
+	setTurningLeft(false);
+	setTurningRight(false);
+	_animationTime = 0;
 }
 
 // ***

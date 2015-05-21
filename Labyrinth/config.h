@@ -67,4 +67,8 @@ namespace config
 	const glm::vec4 SPECULAR_LIGHT_STRENGTH = glm::vec4(1, 1, 1, 1);
 	const glm::vec4 SUN_SPECULAR_LIGHT_COLOR = glm::vec4(1, 1, 0, 1);
 	const glm::vec4 MOON_SPECULAR_LIGHT_COLOR = glm::vec4(1, 1, 1, 1);
+
+	// charecters
+	const int MOVEMENT_TIME_IN_MS = 500;
+
 }

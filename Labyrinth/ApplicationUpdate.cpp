@@ -4,6 +4,10 @@
  
 void Application::onUpdate()
 {
+	//
+	// Set the camera
+	//
+
 	if (config::IS_DEBUG) 
 	{
 		static Uint32 last_time = SDL_GetTicks();
@@ -35,6 +39,11 @@ void Application::onUpdate()
 		break;
 	}
 
+	if (hero->isAnimating())
+	{
+		// TODO ...
+	}
+
 	glm::vec3 eye = glm::vec3(
 		hero->getCurrentPosition().x + middleOfTheFieldOffset + directionBasedOffsetX,
 		config::WALL_HEIGHT * 1.5f, 
@@ -48,4 +57,26 @@ void Application::onUpdate()
 	);
 
 	cameraManager.SetView(eye, at, glm::vec3(0, 1, 0));
+
+	//
+	// Set the characters animation time
+	//
+
+	if (hero->isAnimating())
+	{
+		static Uint32 last_time;
+		if (hero->getAnimationTime() > 0)
+		{
+			hero->setAnimationTime(hero->getAnimationTime() + SDL_GetTicks() - last_time);
+		}
+		else
+		{
+			hero->setAnimationTime(1); // TODO It's a hack...
+		}
+		if (hero->getAnimationTime() > config::MOVEMENT_TIME_IN_MS)
+		{
+			hero->turnOffAnimation();
+		}
+		last_time = SDL_GetTicks();
+	}
 }

@@ -39,9 +39,7 @@ void Application::onKeyboardDown(SDL_KeyboardEvent& key)
 		return;
 	}
 
-	hero->setMoving(false); // TODO delete
-
-	if (hero->isMoving())
+	if (hero->isAnimating())
 	{
 		return;
 	}
@@ -55,6 +53,7 @@ void Application::onKeyboardDown(SDL_KeyboardEvent& key)
 		{
 			return;
 		}
+		hero->setMovingForward(true);
 		hero->moveForward();
 		break;
 	case SDLK_s:
@@ -80,12 +79,15 @@ void Application::onKeyboardDown(SDL_KeyboardEvent& key)
 		{
 			return;
 		}
+		hero->setMovingBackward(true);
 		hero->moveBackward();
 		break;
 	case SDLK_a:
+		hero->setTurningLeft(true);
 		hero->turnLeft();
 		break;
 	case SDLK_d:
+		hero->setTurningRight(true);
 		hero->turnRight();
 		break;
 	}

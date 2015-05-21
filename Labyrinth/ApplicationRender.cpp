@@ -191,18 +191,83 @@ void Application::onRender()
 	//
 
 	const glm::mat4 rotateToDirection = glm::rotate<float>(hero->getCurrentDirection() * 90, 0, 1, 0);
+
+	const glm::mat4 scaleDown = glm::scale<float>(
+		config::FIELD_SIZE / 3.5f, config::FIELD_SIZE / 3.5f, config::FIELD_SIZE / 3.5f);
+
 	const glm::mat4 translateToHeroPosition = glm::translate<float>(
 		hero->getCurrentPosition().x * config::FIELD_SIZE, 0, hero->getCurrentPosition().z * config::FIELD_SIZE);
 	const float offset = config::FIELD_SIZE / 2.0f;
 	const glm::mat4 translateToTheMiddleOfTheField = glm::translate<float>(offset, 0, offset);
 	const glm::mat4 translateToUp = glm::translate<float>(0, config::FIELD_SIZE / 2.0f, 0);
-	const glm::mat4 scaleDown = glm::scale<float>(
-		config::FIELD_SIZE / 3.5f, config::FIELD_SIZE / 3.5f, config::FIELD_SIZE / 3.5f);
 
-	matWorld = translateToHeroPosition
-		* translateToTheMiddleOfTheField
+	glm::mat4 turningRotation = glm::mat4(1);
+	glm::mat4 movingTranslate = glm::mat4(1);
+
+	if (hero->isAnimating())
+	{
+		const float currentPercent = hero->getAnimationTime() / (float)config::MOVEMENT_TIME_IN_MS;
+		const float currentDistance = currentPercent * config::FIELD_SIZE - config::FIELD_SIZE;
+
+		if (hero->isMovingForward())
+		{
+			switch (hero->getCurrentDirection())
+			{
+			case Character::X_PLUS:
+				movingTranslate = glm::translate<float>(currentDistance, 0, 0);
+				break;
+			case Character::X_MINUS:
+				movingTranslate = glm::translate<float>(-currentDistance, 0, 0);
+				break;
+			case Character::Z_PLUS:
+				movingTranslate = glm::translate<float>(0, 0, currentDistance);
+				break;
+			case Character::Z_MINUS:
+				movingTranslate = glm::translate<float>(0, 0, -currentDistance);
+				break;
+			default:
+				break;
+			}
+		}
+
+		if (hero->isMovingBackward())
+		{
+			switch (hero->getCurrentDirection())
+			{
+			case Character::X_PLUS:
+				movingTranslate = glm::translate<float>(-currentDistance, 0, 0);
+				break;
+			case Character::X_MINUS:
+				movingTranslate = glm::translate<float>(currentDistance, 0, 0);
+				break;
+			case Character::Z_PLUS:
+				movingTranslate = glm::translate<float>(0, 0, -currentDistance);
+				break;
+			case Character::Z_MINUS:
+				movingTranslate = glm::translate<float>(0, 0, currentDistance);
+				break;
+			default:
+				break;
+			}
+		}
+
+		if (hero->isTurningLeft())
+		{
+			turningRotation = glm::rotate<float>(-90 + 90 * currentPercent, 0, 1, 0);
+		}
+
+		if (hero->isTurningRight())
+		{
+			turningRotation = glm::rotate<float>(90 - 90 * currentPercent, 0, 1, 0);
+		}
+	}
+
+	matWorld = movingTranslate
 		* translateToUp
+		* translateToTheMiddleOfTheField
+		* translateToHeroPosition
 		* scaleDown
+		* turningRotation
 		* rotateToDirection;
 
 	shaderManager.SetUniform("world", matWorld);
