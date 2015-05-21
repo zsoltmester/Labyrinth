@@ -111,19 +111,19 @@ void Application::onRender()
 			// the walls
 			//
 
-			if (fields[i][j].hasLeftWall())
+			if (fields[i][j].hasZMinusWall())
 			{
 				drawWall(translateToCurrent);
 			}
 
-			if (fields[i][j].hasRightWall())
+			if (fields[i][j].hasZPlusWall())
 			{
 				matWorld = translateToCurrent 
 					* glm::translate<float>(0, 0, config::FIELD_SIZE - config::WALL_THICKNESS);
 				drawWall(matWorld);
 			}
 
-			if (fields[i][j].hasUpperWall())
+			if (fields[i][j].hasXPlusWall())
 			{
 				matWorld = translateToCurrent
 					* glm::translate<float>(config::FIELD_SIZE, 0, 0)
@@ -131,7 +131,7 @@ void Application::onRender()
 				drawWall(matWorld);
 			}
 
-			if (fields[i][j].hasLowerWall())
+			if (fields[i][j].hasXMinusWall())
 			{
 				matWorld = translateToCurrent
 					* glm::translate<float>(config::WALL_THICKNESS, 0, 0)
@@ -139,14 +139,14 @@ void Application::onRender()
 				drawWall(matWorld);
 			}
 
+			//
+			// coin and diamond
+			//
+
 			if (!fields[i][j].hasCoin() && !fields[i][j].hasDiamond())
 			{
 				continue;
 			}
-
-			//
-			// coin and diamond
-			//
 
 			const float offset = config::FIELD_SIZE / 2.0f;
 			matWorld = translateToCurrent
@@ -185,6 +185,36 @@ void Application::onRender()
 			}
 		}
 	}
+
+	//
+	// draw the hero
+	//
+
+	const glm::mat4 rotateToDirection = glm::rotate<float>(hero->getCurrentDirection() * 90, 0, 1, 0);
+	const glm::mat4 translateToHeroPosition = glm::translate<float>(
+		hero->getCurrentPosition().x * config::FIELD_SIZE, 0, hero->getCurrentPosition().z * config::FIELD_SIZE);
+	const float offset = config::FIELD_SIZE / 2.0f;
+	const glm::mat4 translateToTheMiddleOfTheField = glm::translate<float>(offset, 0, offset);
+	const glm::mat4 translateToUp = glm::translate<float>(0, config::FIELD_SIZE / 2.0f, 0);
+	const glm::mat4 scaleDown = glm::scale<float>(
+		config::FIELD_SIZE / 3.5f, config::FIELD_SIZE / 3.5f, config::FIELD_SIZE / 3.5f);
+
+	matWorld = translateToHeroPosition
+		* translateToTheMiddleOfTheField
+		* translateToUp
+		* scaleDown
+		* rotateToDirection;
+
+	shaderManager.SetUniform("world", matWorld);
+	shaderManager.SetUniform("worldInverseTranspose", glm::transpose(glm::inverse(matWorld)));
+	shaderManager.SetUniform("MVP", cameraManager.GetViewProj() * matWorld);
+	shaderManager.SetTexture("textureImage", 0, suzanneTextureID);
+	shaderManager.SetUniform("isASpecularMaterial", true);
+	heroMesh->draw();
+
+	//
+	// turn off the managers
+	//
 
 	vertexBufferManager.Off();
 	shaderManager.Off();

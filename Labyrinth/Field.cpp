@@ -1,83 +1,83 @@
 #include "Field.h"
 
-const bool Field::hasLeftWall() const
+const bool Field::hasZMinusWall() const
 {
-	return _hasLeftWall;
+	return _hasZMinusWall;
 }
 
-const bool Field::hasRightWall() const
+const bool Field::hasZPlusWall() const
 {
-	return _hasRightWall;
+	return _hasZPlusWall;
 }
 
-const bool Field::hasUpperWall() const
+const bool Field::hasXPlusWall() const
 {
-	return _hasUpperWall;
+	return _hasXPlusWall;
 }
 
-const bool Field::hasLowerWall() const
+const bool Field::hasXMinusWall() const
 {
-	return _hasLowerWall;
+	return _hasXMinusWall;
 }
 
-void Field::setHasLeftWall(const bool hasLeftWall)
+void Field::setHasZMinusWall(const bool hasZMinusWall)
 {
-	_hasLeftWall = hasLeftWall;
+	_hasZMinusWall = hasZMinusWall;
 }
 
-void Field::setHasRightWall(const bool hasRightWall)
+void Field::setHasZPlusWall(const bool hasZPlusWall)
 {
-	_hasRightWall = hasRightWall;
+	_hasZPlusWall = hasZPlusWall;
 }
 
-void Field::setHasUpperWall(const bool hasUpperWall)
+void Field::setHasXPlusWall(const bool hasXPlusWall)
 {
-	_hasUpperWall = hasUpperWall;
+	_hasXPlusWall = hasXPlusWall;
 }
 
-void Field::setHasLowerWall(const bool hasLowerWall)
+void Field::setHasXMinusWall(const bool hasXMinusWall)
 {
-	_hasLowerWall = hasLowerWall;
+	_hasXMinusWall = hasXMinusWall;
 }
 
-const bool Field::isOnLeftBorder() const
+const bool Field::isOnZMinusBorder() const
 {
-	return _isOnLeftBorder;
+	return _isOnZMinusBorder;
 }
 
-const bool Field::isOnRightBorder() const
+const bool Field::isOnZPlusBorder() const
 {
-	return _isOnRightBorder;
+	return _isOnZPlusBorder;
 }
 
-const bool Field::isOnUpperBorder() const
+const bool Field::isOnXPlusBorder() const
 {
-	return _isOnUpperBorder;
+	return _isOnXPlusBorder;
 }
 
-const bool Field::isOnLowerBorder() const
+const bool Field::isOnXMinusBorder() const
 {
-	return _isOnLowerBorder;
+	return _isOnXMinusBorder;
 }
 
-void Field::setIsOnLeftBorder(const bool isOnLeftBorder)
+void Field::setIsOnZMinusBorder(const bool isOnZMinusBorder)
 {
-	_isOnLeftBorder = isOnLeftBorder;
+	_isOnZMinusBorder = isOnZMinusBorder;
 }
 
-void Field::setIsOnRightBorder(const bool isOnRightBorder)
+void Field::setIsOnZPlusBorder(const bool isOnZPlusBorder)
 {
-	_isOnRightBorder = isOnRightBorder;
+	_isOnZPlusBorder = isOnZPlusBorder;
 }
 
-void Field::setIsOnUpperBorder(const bool isOnUpperBorder)
+void Field::setIsOnXPlusBorder(const bool isOnXPlusBorder)
 {
-	_isOnUpperBorder = isOnUpperBorder;
+	_isOnXPlusBorder = isOnXPlusBorder;
 }
 
-void Field::setIsOnLowerBorder(const bool isOnLowerBorder)
+void Field::setIsOnXMinusBorder(const bool isOnXMinusBorder)
 {
-	_isOnLowerBorder = isOnLowerBorder;
+	_isOnXMinusBorder = isOnXMinusBorder;
 }
 
 const bool Field::hasCoin() const

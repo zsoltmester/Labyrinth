@@ -14,38 +14,38 @@ public:
 	/*
 	Wall between (0, 0, 0) and (qs, 0, 0), where qs is the quad size.
 	*/
-	const bool hasLeftWall() const;
-	void setHasLeftWall(const bool hasLeftWall);
+	const bool hasZMinusWall() const;
+	void setHasZMinusWall(const bool hasZMinusWall);
 
-	const bool isOnLeftBorder() const;
-	void setIsOnLeftBorder(const bool isOnLeftBorder);
+	const bool isOnZMinusBorder() const;
+	void setIsOnZMinusBorder(const bool isOnZMinusBorder);
 
 	/*
 	Wall between (0, 0, qs) and (qs 0, qs), where qs is the quad size.
 	*/
-	const bool hasRightWall() const;
-	void setHasRightWall(const bool hasRightWall);
+	const bool hasZPlusWall() const;
+	void setHasZPlusWall(const bool hasZPlusWall);
 
-	const bool isOnRightBorder() const;
-	void setIsOnRightBorder(const bool isOnRightBorder);
+	const bool isOnZPlusBorder() const;
+	void setIsOnZPlusBorder(const bool isOnZPlusBorder);
 
 	/*
 	Wall between (qs, 0, 0) and (qs, 0, qs), where qs is the quad size.
 	*/
-	const bool hasUpperWall() const;
-	void setHasUpperWall(const bool hasUpperWall);
+	const bool hasXPlusWall() const;
+	void setHasXPlusWall(const bool hasXPlusWall);
 
-	const bool isOnUpperBorder() const;
-	void setIsOnUpperBorder(const bool isOnUpperBorder);
+	const bool isOnXPlusBorder() const;
+	void setIsOnXPlusBorder(const bool isOnXPlusBorder);
 
 	/*
 	Wall between (0, 0, 0) and (0, 0, qs), where qs is the quad size.
 	*/
-	const bool hasLowerWall() const;
-	void setHasLowerWall(const bool hasLowerWall);
+	const bool hasXMinusWall() const;
+	void setHasXMinusWall(const bool hasXMinusWall);
 
-	const bool isOnLowerBorder() const;
-	void setIsOnLowerBorder(const bool isOnLowerBorder);
+	const bool isOnXMinusBorder() const;
+	void setIsOnXMinusBorder(const bool isOnXMinusBorder);
 
 	/*
 	Returns true if the field contains a coin.
@@ -66,15 +66,15 @@ public:
 	void setHasPortal(const PortalType type);
 
 private:
-	bool _hasLeftWall = false;
-	bool _hasRightWall = false;
-	bool _hasUpperWall = false;
-	bool _hasLowerWall = false;
+	bool _hasZMinusWall = false;
+	bool _hasZPlusWall = false;
+	bool _hasXPlusWall = false;
+	bool _hasXMinusWall = false;
 		 
-	bool _isOnLeftBorder = false;
-	bool _isOnRightBorder = false;
-	bool _isOnUpperBorder = false;
-	bool _isOnLowerBorder = false;
+	bool _isOnZMinusBorder = false;
+	bool _isOnZPlusBorder = false;
+	bool _isOnXPlusBorder = false;
+	bool _isOnXMinusBorder = false;
 		 
 	bool _hasCoin = false;
 	bool _hasDiamond = false;

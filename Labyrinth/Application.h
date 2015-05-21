@@ -17,10 +17,12 @@
 #include "gCamera.h"
 #include "gShaderProgram.h"
 #include "gVertexBuffer.h"
+#include "Mesh_OGL3.h"
 
 // Internal headers
 #include "config.h"
 #include "Field.h"
+#include "Character.h"
 
 class Application
 {
@@ -74,6 +76,10 @@ private:
 	GLuint wallTextureID;
 	GLuint coinTextureID;
 	GLuint diamondTextureID;
+	GLuint suzanneTextureID;
 
 	Field fields[config::MAP_SIZE][config::MAP_SIZE];
+	
+	Hero* hero;
+	Mesh* heroMesh;
 };

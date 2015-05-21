@@ -8,14 +8,20 @@ public:
 
 	struct Position
 	{
-		short x;
-		short z;
+		int x;
+		int z;
+
+		Position(int x, int z)
+		{
+			this->x = x;
+			this->z = z;
+		}
 	};
 
 	const enum Direction
 	{
-		X_PLUS, X_MINUS,
-		Z_PLUS, Z_MINUS
+		Z_PLUS, X_PLUS,
+		Z_MINUS, X_MINUS
 	};
 
 	Character(Position, Direction);

@@ -5,9 +5,11 @@
 #include <time.h>
 #include <set>
 
+#include "GLUtils.hpp"
+#include "ObjParser_OGL3.h"
+
 #include "config.h"
 #include "GeometryHelper.h"
-#include "GLUtils.hpp"
 
 //
 // Helper functions
@@ -50,9 +52,9 @@ void initAndConfigFields(Field fields[config::MAP_SIZE][config::MAP_SIZE])
 	{
 		i = rand() % config::MAP_SIZE;
 		j = rand() % config::MAP_SIZE;
-	} while ((coinsPlace.find(std::pair<short, short>(i, j)) != coinsPlace.end())
-		|| (diamondsPlace.find(std::pair<short, short>(i, j)) != diamondsPlace.end()));
-	startPortalPlace = std::pair<short, short>(i, j);
+		startPortalPlace = std::pair<short, short>(i, j);
+	} while ((coinsPlace.find(startPortalPlace) != coinsPlace.end())
+		|| (diamondsPlace.find(startPortalPlace) != diamondsPlace.end()));
 	
 	// end portal place
 	std::pair<short, short> endPortalPlace;
@@ -60,10 +62,10 @@ void initAndConfigFields(Field fields[config::MAP_SIZE][config::MAP_SIZE])
 	{
 		i = rand() % config::MAP_SIZE;
 		j = rand() % config::MAP_SIZE;
-	} while ((coinsPlace.find(std::pair<short, short>(i, j)) != coinsPlace.end())
-		|| (diamondsPlace.find(std::pair<short, short>(i, j)) != diamondsPlace.end())
+		endPortalPlace = std::pair<short, short>(i, j);
+	} while ((coinsPlace.find(endPortalPlace) != coinsPlace.end())
+		|| (diamondsPlace.find(endPortalPlace) != diamondsPlace.end())
 		|| startPortalPlace == endPortalPlace);
-	endPortalPlace = std::pair<short, short>(i, j);
 
 	// set fields attributes
 	const short correctedPossibility = 1.0f / (config::WALL_POSSIBILITY / 2.0f);
@@ -75,37 +77,37 @@ void initAndConfigFields(Field fields[config::MAP_SIZE][config::MAP_SIZE])
 			// border
 			//
 
-			if (i == 0) fields[i][j].setIsOnLowerBorder(true);
-			if (i == config::MAP_SIZE - 1) fields[i][j].setIsOnUpperBorder(true);
-			if (j == 0) fields[i][j].setIsOnLeftBorder(true);
-			if (j == config::MAP_SIZE - 1) fields[i][j].setIsOnRightBorder(true);
+			if (i == 0) fields[i][j].setIsOnXMinusBorder(true);
+			if (i == config::MAP_SIZE - 1) fields[i][j].setIsOnXPlusBorder(true);
+			if (j == 0) fields[i][j].setIsOnZMinusBorder(true);
+			if (j == config::MAP_SIZE - 1) fields[i][j].setIsOnZPlusBorder(true);
 
 			//
 			// wall
 			//
 
-			if (!fields[i][j].hasLeftWall() && rand() % correctedPossibility == 0)
+			if (!fields[i][j].hasZMinusWall() && rand() % correctedPossibility == 0)
 			{
-				fields[i][j].setHasLeftWall(true);
-				if (config::WITH_DOUBLE_WALL && !fields[i][j].isOnLeftBorder()) fields[i][j - 1].setHasRightWall(true);
+				fields[i][j].setHasZMinusWall(true);
+				if (config::WITH_DOUBLE_WALL && !fields[i][j].isOnZMinusBorder()) fields[i][j - 1].setHasZPlusWall(true);
 			}
 
-			if (!fields[i][j].hasRightWall() && rand() % correctedPossibility == 0)
+			if (!fields[i][j].hasZPlusWall() && rand() % correctedPossibility == 0)
 			{
-				fields[i][j].setHasRightWall(true);
-				if (config::WITH_DOUBLE_WALL && !fields[i][j].isOnRightBorder()) fields[i][j + 1].setHasLeftWall(true);
+				fields[i][j].setHasZPlusWall(true);
+				if (config::WITH_DOUBLE_WALL && !fields[i][j].isOnZPlusBorder()) fields[i][j + 1].setHasZMinusWall(true);
 			}
 
-			if (!fields[i][j].hasUpperWall() && rand() % correctedPossibility == 0)
+			if (!fields[i][j].hasXPlusWall() && rand() % correctedPossibility == 0)
 			{
-				fields[i][j].setHasUpperWall(true);
-				if (config::WITH_DOUBLE_WALL && !fields[i][j].isOnUpperBorder()) fields[i + 1][j].setHasLowerWall(true);
+				fields[i][j].setHasXPlusWall(true);
+				if (config::WITH_DOUBLE_WALL && !fields[i][j].isOnXPlusBorder()) fields[i + 1][j].setHasXMinusWall(true);
 			}
 			
-			if (!fields[i][j].hasLowerWall() && rand() % correctedPossibility == 0)
+			if (!fields[i][j].hasXMinusWall() && rand() % correctedPossibility == 0)
 			{
-				fields[i][j].setHasLowerWall(true);
-				if (config::WITH_DOUBLE_WALL && !fields[i][j].isOnLowerBorder()) fields[i - 1][j].setHasUpperWall(true);
+				fields[i][j].setHasXMinusWall(true);
+				if (config::WITH_DOUBLE_WALL && !fields[i][j].isOnXMinusBorder()) fields[i - 1][j].setHasXPlusWall(true);
 			}
 
 			//
@@ -142,12 +144,49 @@ void initAndConfigFields(Field fields[config::MAP_SIZE][config::MAP_SIZE])
 	}
 }
 
+void initHero(Hero*& hero, const Field fields[config::MAP_SIZE][config::MAP_SIZE])
+{
+	int i, j;
+
+	// hero position
+	do
+	{
+		i = rand() % config::MAP_SIZE;
+		j = rand() % config::MAP_SIZE;
+	} while (fields[i][j].hasCoin() 
+		|| fields[i][j].hasDiamond()
+		|| fields[i][j].hasPortal(Field::PortalType::START)
+		|| fields[i][j].hasPortal(Field::PortalType::END));
+	Character::Position heroPosition = Character::Position(i, j);
+
+	// hero direction
+	i = rand() % 4;
+	Character::Direction heroDirection;
+	switch (i)
+	{
+	case 0:
+		heroDirection = Character::Direction::X_PLUS;
+		break;
+	case 1:
+		heroDirection = Character::Direction::X_MINUS;
+		break;
+	case 2:
+		heroDirection = Character::Direction::Z_PLUS;
+		break;
+	case 3:
+		heroDirection = Character::Direction::Z_MINUS;
+		break;
+	}
+
+	hero = new Hero(heroPosition, heroDirection);
+}
+
 //
 // Application's functions
 //
 
 Application::Application(void)
-{ 
+{
 }
 
 const bool Application::onInitialize()
@@ -230,6 +269,7 @@ const bool Application::onInitialize()
 	wallTextureID = TextureFromFile(config::TEXTURE_FILE_NAME_WALL.c_str());
 	coinTextureID = TextureFromFile(config::TEXTURE_FILE_NAME_COIN.c_str());
 	diamondTextureID = TextureFromFile(config::TEXTURE_FILE_NAME_DIAMOND.c_str());
+	suzanneTextureID = TextureFromFile(config::TEXTURE_FILE_NAME_SUZANNE.c_str());
 
 	//
 	// init shaders
@@ -258,6 +298,10 @@ const bool Application::onInitialize()
 	cameraManager.SetProj(45.0f, config::SCREEN_RESOLUTION_WIDTH / (float)config::SCREEN_RESOLUTION_HEIGHT, 0.01f, 1000.0f);
 
 	initAndConfigFields(fields);
+	initHero(hero, fields);
+
+	heroMesh = ObjParser::parse("Suzanne.obj");
+	heroMesh->initBuffers();
 
 	//std::cout << "[onInitialize()] End" << std::endl;
 

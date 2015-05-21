@@ -6,7 +6,7 @@
 
 namespace config
 {
-	const bool	IS_DEBUG = true;
+	const bool	IS_DEBUG = false;
 
 	// screen resolution
 	const short SCREEN_RESOLUTION_WIDTH = 1366;
@@ -17,6 +17,7 @@ namespace config
 	const std::string TEXTURE_FILE_NAME_WALL = "texture_wall.bmp";
 	const std::string TEXTURE_FILE_NAME_COIN = "texture_coin.bmp";
 	const std::string TEXTURE_FILE_NAME_DIAMOND = "texture_diamond.bmp";
+	const std::string TEXTURE_FILE_NAME_SUZANNE = "texture_suzanne.bmp";
 
 	// map
 	const short	MAP_SIZE = 50; // in task: 50

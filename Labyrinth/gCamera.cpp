@@ -37,6 +37,9 @@ void gCamera::SetView(glm::vec3 _eye, glm::vec3 _at, glm::vec3 _up)
 
 	m_u = atan2f( m_fw.z, m_fw.x );
 	m_v = acosf( m_fw.y );
+
+	m_viewMatrix = glm::lookAt(m_eye, m_at, m_up);
+	m_matViewProj = m_matProj * m_viewMatrix;
 }
 
 void gCamera::SetProj(float _angle, float _aspect, float _zn, float _zf)

@@ -7,6 +7,7 @@
 Character::Character(Character::Position position, Direction direction) 
 	: _position(position), _direction(direction)
 {
+	_isMoving = false;
 }
 
 Character::~Character()
@@ -25,11 +26,6 @@ Character::Direction Character::getCurrentDirection() const
 
 void Character::moveForward()
 {
-	if (_isMoving)
-	{
-		return;
-	}
-
 	switch (_direction)
 	{
 	case X_PLUS:
@@ -49,11 +45,6 @@ void Character::moveForward()
 
 void Character::moveBackward()
 {
-	if (_isMoving)
-	{
-		return;
-	}
-
 	switch (_direction)
 	{
 	case X_PLUS:
@@ -73,23 +64,18 @@ void Character::moveBackward()
 
 void Character::turnLeft()
 {
-	if (_isMoving)
-	{
-		return;
-	}
-
 	switch (_direction)
 	{
 	case X_PLUS:
-		_direction = Z_PLUS;
-		break;
-	case Z_PLUS:
-		_direction = X_MINUS;
-		break;
-	case X_MINUS:
 		_direction = Z_MINUS;
 		break;
 	case Z_MINUS:
+		_direction = X_MINUS;
+		break;
+	case X_MINUS:
+		_direction = Z_PLUS;
+		break;
+	case Z_PLUS:
 		_direction = X_PLUS;
 		break;
 	}
@@ -97,23 +83,18 @@ void Character::turnLeft()
 
 void Character::turnRight()
 {
-	if (_isMoving)
-	{
-		return;
-	}
-
 	switch (_direction)
 	{
 	case X_PLUS:
-		_direction = Z_MINUS;
-		break;
-	case Z_MINUS:
-		_direction = X_MINUS;
-		break;
-	case X_MINUS:
 		_direction = Z_PLUS;
 		break;
 	case Z_PLUS:
+		_direction = X_MINUS;
+		break;
+	case X_MINUS:
+		_direction = Z_MINUS;
+		break;
+	case Z_MINUS:
 		_direction = X_PLUS;
 		break;
 	}
