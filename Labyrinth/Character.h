@@ -87,7 +87,7 @@ public:
 	void teleport(Position);
 
 private:
-	
+
 	Position _position;
 	Direction _direction;
 	bool _isMovingForward;

@@ -30,7 +30,7 @@ glm::mat4 CharacterHelper::getMovingTranslateMatrix(Hero* hero)
 		return movingTranslate;
 	}
 
-	const float currentPercent = hero->getAnimationTime() / (float)config::MOVEMENT_TIME_IN_MS;
+	const float currentPercent = hero->getAnimationTime() / (float)config::CHARACTER_MOVEMENT_TIME_IN_MS;
 	const float currentDistance = currentPercent * config::FIELD_SIZE - config::FIELD_SIZE;
 
 	if (hero->isMovingForward())
@@ -87,7 +87,7 @@ glm::mat4 CharacterHelper::getTurningRotationMatrix(Hero* hero)
 		return turningRotation;
 	}
 
-	const float currentPercent = hero->getAnimationTime() / (float)config::MOVEMENT_TIME_IN_MS;
+	const float currentPercent = hero->getAnimationTime() / (float)config::CHARACTER_MOVEMENT_TIME_IN_MS;
 
 	if (hero->isTurningLeft())
 	{

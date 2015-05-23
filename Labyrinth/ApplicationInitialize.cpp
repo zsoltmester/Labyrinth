@@ -18,60 +18,60 @@
 void initAndConfigFields(Field fields[config::MAP_SIZE][config::MAP_SIZE])
 {
 	srand(time(NULL));
-	short i;
-	short j;
-	
+	int i;
+	int j;
+
 	// coins place
-	std::set<std::pair<short, short>> coinsPlace;
+	std::set<std::pair<int, int>> coinsPlace;
 	while (coinsPlace.size() < config::NUMBER_OF_COINS)
 	{
 		i = rand() % config::MAP_SIZE;
 		j = rand() % config::MAP_SIZE;
-		if (coinsPlace.find(std::pair<short, short>(i, j)) == coinsPlace.end())
+		if (coinsPlace.find(std::pair<int, int>(i, j)) == coinsPlace.end())
 		{
-			coinsPlace.insert(std::pair<short, short>(i, j));
+			coinsPlace.insert(std::pair<int, int>(i, j));
 		}
 	}
 
 	// diamonds place
-	std::set<std::pair<short, short>> diamondsPlace;
+	std::set<std::pair<int, int>> diamondsPlace;
 	while (diamondsPlace.size() < config::NUMBER_OF_DIAMONDS)
 	{
 		i = rand() % config::MAP_SIZE;
 		j = rand() % config::MAP_SIZE;
-		if ((coinsPlace.find(std::pair<short, short>(i, j)) == coinsPlace.end())
-				&& (diamondsPlace.find(std::pair<short, short>(i, j)) == diamondsPlace.end()))
+		if ((coinsPlace.find(std::pair<int, int>(i, j)) == coinsPlace.end())
+			&& (diamondsPlace.find(std::pair<int, int>(i, j)) == diamondsPlace.end()))
 		{
-			diamondsPlace.insert(std::pair<short, short>(i, j));
+			diamondsPlace.insert(std::pair<int, int>(i, j));
 		}
 	}
 
 	// first portal place
-	std::pair<short, short> firstPortalPlace;
+	std::pair<int, int> firstPortalPlace;
 	do
 	{
 		i = rand() % config::MAP_SIZE;
 		j = rand() % config::MAP_SIZE;
-		firstPortalPlace = std::pair<short, short>(i, j);
+		firstPortalPlace = std::pair<int, int>(i, j);
 	} while ((coinsPlace.find(firstPortalPlace) != coinsPlace.end())
 		|| (diamondsPlace.find(firstPortalPlace) != diamondsPlace.end()));
-	
+
 	// second portal place
-	std::pair<short, short> secondPortalPlace;
+	std::pair<int, int> secondPortalPlace;
 	do
 	{
 		i = rand() % config::MAP_SIZE;
 		j = rand() % config::MAP_SIZE;
-		secondPortalPlace = std::pair<short, short>(i, j);
+		secondPortalPlace = std::pair<int, int>(i, j);
 	} while ((coinsPlace.find(secondPortalPlace) != coinsPlace.end())
 		|| (diamondsPlace.find(secondPortalPlace) != diamondsPlace.end())
 		|| firstPortalPlace == secondPortalPlace);
 
 	// set fields attributes
-	const short correctedPossibility = 1.0f / (config::WALL_POSSIBILITY / 2.0f);
-	for (short i = 0; i < config::MAP_SIZE; ++i)
+	const int correctedPossibility = 1.0f / (config::WALL_POSSIBILITY / 2.0f);
+	for (int i = 0; i < config::MAP_SIZE; ++i)
 	{
-		for (short j = 0; j < config::MAP_SIZE; ++j)
+		for (int j = 0; j < config::MAP_SIZE; ++j)
 		{
 			//
 			// border
@@ -89,32 +89,44 @@ void initAndConfigFields(Field fields[config::MAP_SIZE][config::MAP_SIZE])
 			if (!fields[i][j].hasZMinusWall() && rand() % correctedPossibility == 0)
 			{
 				fields[i][j].setHasZMinusWall(true);
-				if (config::WITH_DOUBLE_WALL && !fields[i][j].isOnZMinusBorder()) fields[i][j - 1].setHasZPlusWall(true);
+				if (config::WITH_DOUBLE_WALL && !fields[i][j].isOnZMinusBorder())
+				{
+					fields[i][j - 1].setHasZPlusWall(true);
+				}
 			}
 
 			if (!fields[i][j].hasZPlusWall() && rand() % correctedPossibility == 0)
 			{
 				fields[i][j].setHasZPlusWall(true);
-				if (config::WITH_DOUBLE_WALL && !fields[i][j].isOnZPlusBorder()) fields[i][j + 1].setHasZMinusWall(true);
+				if (config::WITH_DOUBLE_WALL && !fields[i][j].isOnZPlusBorder())
+				{
+					fields[i][j + 1].setHasZMinusWall(true);
+				}
 			}
 
 			if (!fields[i][j].hasXPlusWall() && rand() % correctedPossibility == 0)
 			{
 				fields[i][j].setHasXPlusWall(true);
-				if (config::WITH_DOUBLE_WALL && !fields[i][j].isOnXPlusBorder()) fields[i + 1][j].setHasXMinusWall(true);
+				if (config::WITH_DOUBLE_WALL && !fields[i][j].isOnXPlusBorder())
+				{
+					fields[i + 1][j].setHasXMinusWall(true);
+				}
 			}
-			
+
 			if (!fields[i][j].hasXMinusWall() && rand() % correctedPossibility == 0)
 			{
 				fields[i][j].setHasXMinusWall(true);
-				if (config::WITH_DOUBLE_WALL && !fields[i][j].isOnXMinusBorder()) fields[i - 1][j].setHasXPlusWall(true);
+				if (config::WITH_DOUBLE_WALL && !fields[i][j].isOnXMinusBorder())
+				{
+					fields[i - 1][j].setHasXPlusWall(true);
+				}
 			}
 
 			//
 			// coin
 			//
 
-			if (coinsPlace.find(std::pair<short, short>(i, j)) != coinsPlace.end())
+			if (coinsPlace.find(std::pair<int, int>(i, j)) != coinsPlace.end())
 			{
 				fields[i][j].setHasCoin(true);
 			}
@@ -123,7 +135,7 @@ void initAndConfigFields(Field fields[config::MAP_SIZE][config::MAP_SIZE])
 			// diamond
 			//
 
-			if (diamondsPlace.find(std::pair<short, short>(i, j)) != diamondsPlace.end())
+			if (diamondsPlace.find(std::pair<int, int>(i, j)) != diamondsPlace.end())
 			{
 				fields[i][j].setHasDiamond(true);
 			}
@@ -132,11 +144,11 @@ void initAndConfigFields(Field fields[config::MAP_SIZE][config::MAP_SIZE])
 			// portal
 			//
 
-			if (firstPortalPlace == std::pair<short, short>(i, j))
+			if (firstPortalPlace == std::pair<int, int>(i, j))
 			{
 				fields[i][j].setHasPortal(true);
-			} 
-			else if (secondPortalPlace == std::pair<short, short>(i, j))
+			}
+			else if (secondPortalPlace == std::pair<int, int>(i, j))
 			{
 				fields[i][j].setHasPortal(true);
 			}
@@ -153,7 +165,7 @@ void initHero(Hero*& hero, const Field fields[config::MAP_SIZE][config::MAP_SIZE
 	{
 		i = rand() % config::MAP_SIZE;
 		j = rand() % config::MAP_SIZE;
-	} while (fields[i][j].hasCoin() 
+	} while (fields[i][j].hasCoin()
 		|| fields[i][j].hasDiamond()
 		|| fields[i][j].hasPortal()
 		|| fields[i][j].hasPortal());
@@ -188,7 +200,7 @@ void initHero(Hero*& hero, const Field fields[config::MAP_SIZE][config::MAP_SIZE
 Application::Application(void)
 {
 	isTopView = false;
-	collectedCoins = 0; 
+	collectedCoins = 0;
 	collectedDiamonds = 0;
 	isPortalActive = true;
 	isWin = false;
@@ -216,7 +228,7 @@ const bool Application::onInitialize()
 		.AddAttribute(0, 3) // position
 		->AddAttribute(1, 3) // normal
 		->AddAttribute(2, 2); // texture
-	
+
 	//
 	// create geometries
 	//
@@ -290,10 +302,12 @@ const bool Application::onInitialize()
 	shaderManager.BindAttribLoc(0, "vs_in_position");
 	shaderManager.BindAttribLoc(1, "vs_in_normal");
 	shaderManager.BindAttribLoc(2, "vs_in_texture");
+
 	if (!shaderManager.LinkProgram())
 	{
 		return false;
 	}
+
 	shaderManager.On();
 	shaderManager.SetUniform("ambientLightColor", config::AMBIENT_LIGHT_COLOR);
 	shaderManager.SetUniform("ambientLightStrength", config::AMBIENT_LIGHT_STRENGTH);
@@ -305,13 +319,21 @@ const bool Application::onInitialize()
 	shaderManager.SetUniform("specularLightSize", config::SPECULAR_LIGHT_SIZE);
 	shaderManager.Off();
 
+	//
+	// init mesh
+	//
+
+	heroMesh = ObjParser::parse("Suzanne.obj");
+	heroMesh->initBuffers();
+
+	//
+	//  other initialization
+	//
+
 	cameraManager.SetProj(45.0f, config::SCREEN_RESOLUTION_WIDTH / (float)config::SCREEN_RESOLUTION_HEIGHT, 0.01f, 1000.0f);
 
 	initAndConfigFields(fields);
 	initHero(hero, fields);
-
-	heroMesh = ObjParser::parse("Suzanne.obj");
-	heroMesh->initBuffers();
 
 	//std::cout << "[onInitialize()] End" << std::endl;
 

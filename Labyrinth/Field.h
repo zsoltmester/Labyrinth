@@ -65,12 +65,12 @@ private:
 	bool _hasZPlusWall = false;
 	bool _hasXPlusWall = false;
 	bool _hasXMinusWall = false;
-		 
+
 	bool _isOnZMinusBorder = false;
 	bool _isOnZPlusBorder = false;
 	bool _isOnXPlusBorder = false;
 	bool _isOnXMinusBorder = false;
-		 
+
 	bool _hasCoin = false;
 	bool _hasDiamond = false;
 	bool _hasPortal = false;

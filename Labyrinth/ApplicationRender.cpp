@@ -49,7 +49,7 @@ void Application::onRender()
 	//
 
 	const float orbitRadius = (config::MAP_SIZE * config::FIELD_SIZE * config::SUN_AND_MOON_ORBIT_RADIUS_MULTIPLIER) / 2.0f;
-	
+
 	// sun
 	shaderManager.SetUniform("isThisTheSunsVertex", true);
 	const glm::vec3 sunCurrentPosition = drawOrb(orbitRadius);
@@ -61,44 +61,47 @@ void Application::onRender()
 	}
 	shaderManager.SetUniform("isThisTheSunsVertex", false);
 
-	
+
 	// moon
 	shaderManager.SetUniform("isThisTheMoonsVertex", true);
 	const glm::vec3 moonCurrentPosition = drawOrb(-orbitRadius);
 	shaderManager.SetUniform("moonPosition", moonCurrentPosition);
 	if (moonCurrentPosition.y > 0)
 	{
-		shaderManager.SetUniform("diffuseLightStrength", 
+		shaderManager.SetUniform("diffuseLightStrength",
 			config::MOON_DIFFUSE_LIGHT_MAX_STRENGTH * (moonCurrentPosition.y / orbitRadius));
 	}
 	shaderManager.SetUniform("isThisTheMoonsVertex", false);
-	
+
 	//
 	// draw the fields
 	//
 
-	for (short i = 0; i < config::MAP_SIZE; ++i) 
+	for (int i = 0; i < config::MAP_SIZE; ++i)
 	{
-		for (short j = 0; j < config::MAP_SIZE; ++j) 
+		for (int j = 0; j < config::MAP_SIZE; ++j)
 		{
-			const glm::mat4 translateToCurrent = 
+			const glm::mat4 translateToCurrent =
 				glm::translate<float>(i * config::FIELD_SIZE, 0, j * config::FIELD_SIZE);
 
-			// check if it's a portal
+			//
+			// portal
+			//
+
 			if (fields[i][j].hasPortal())
 			{
 				shaderManager.SetUniform("isThisAFieldWithAPortal", true);
 				const float middleOfTheField = config::FIELD_SIZE / 2.0f;
-				shaderManager.SetUniform("portalLightSourcePosition", 
+				shaderManager.SetUniform("portalLightSourcePosition",
 					(translateToCurrent * glm::vec4(middleOfTheField, config::WALL_HEIGHT, middleOfTheField, 1)).xyz);
-			} 
+			}
 			else
 			{
 				shaderManager.SetUniform("isThisAFieldWithAPortal", false);
 			}
 
 			//
-			// the grass
+			// grass
 			//
 
 			shaderManager.SetUniform("world", translateToCurrent);
@@ -109,7 +112,7 @@ void Application::onRender()
 			vertexBufferManager.Draw(GL_QUADS, startOfQuadVertices, numberOfQuadVertices);
 
 			//
-			// the walls
+			// walls
 			//
 
 			if (fields[i][j].hasZMinusWall())
@@ -119,7 +122,7 @@ void Application::onRender()
 
 			if (fields[i][j].hasZPlusWall())
 			{
-				matWorld = translateToCurrent 
+				matWorld = translateToCurrent
 					* glm::translate<float>(0, 0, config::FIELD_SIZE - config::WALL_THICKNESS);
 				drawWall(matWorld);
 			}
@@ -153,7 +156,7 @@ void Application::onRender()
 			matWorld = translateToCurrent
 				* glm::translate<float>(offset, 0, offset); // translate to the middle of the field
 
-			// rotate
+			// rotation
 			if (fields[i][j].hasCoin())
 			{
 				const float coinRotation = SDL_GetTicks() / 1000.0f * 360.0f / config::COIN_ANIMATION_LENGTH;
@@ -193,6 +196,10 @@ void Application::onRender()
 
 	if (!isWin && !isGameOver)
 	{
+		//
+		// default state
+		//
+
 		const glm::mat4 rotateToDirection = CharacterHelper::getRotationToDirectionMatrix(hero);
 
 		const glm::mat4 scaleDown = glm::scale<float>(
@@ -215,6 +222,10 @@ void Application::onRender()
 	}
 	else if (isWin)
 	{
+		//
+		// win state
+		//
+
 		const glm::mat4 rotateToDirection = CharacterHelper::getRotationToDirectionMatrix(hero);
 
 		const glm::mat4 scaleDown = glm::scale<float>(
@@ -229,19 +240,19 @@ void Application::onRender()
 		// JUMP_LENGTH < x <= 2*JUMP_LENGTH (-> from jumpSize to 0): (1 - ((x - JUMP_LENGTH) / JUMP_LENGTH)) * jumpSize
 
 		glm::mat4 jumpTranslate = glm::mat4(0);
-		float jumpSize = (collectedCoins / (float)config::NUMBER_OF_COINS) * config::JUMP_MULTIPLIER;
+		float jumpHeight = (collectedCoins / (float)config::NUMBER_OF_COINS) * config::JUMP_HEIGHT + config::FIELD_SIZE * 3;
 		if (winLastRenderingTime != 0)
 		{
 			xWinFunctionParameter += SDL_GetTicks() - winLastRenderingTime;
 
 			float y;
-			if (xWinFunctionParameter <= config::JUMP_LENGTH)
+			if (xWinFunctionParameter <= config::JUMP_LENGTH_IN_MS)
 			{
-				y = (xWinFunctionParameter / config::JUMP_LENGTH) * jumpSize;
+				y = (xWinFunctionParameter / (float)config::JUMP_LENGTH_IN_MS) * jumpHeight;
 			}
-			else if (xWinFunctionParameter <= 2 * config::JUMP_LENGTH)
+			else if (xWinFunctionParameter <= 2.0f * config::JUMP_LENGTH_IN_MS)
 			{
-				y = (1 - ((xWinFunctionParameter - config::JUMP_LENGTH) / config::JUMP_LENGTH)) * jumpSize;
+				y = (1 - ((xWinFunctionParameter - config::JUMP_LENGTH_IN_MS) / (float)config::JUMP_LENGTH_IN_MS)) * jumpHeight;
 			}
 			else
 			{
@@ -256,7 +267,6 @@ void Application::onRender()
 		{
 			winLastRenderingTime = SDL_GetTicks();
 		}
-		
 
 		matWorld = jumpTranslate
 			* translateToUp
@@ -264,10 +274,12 @@ void Application::onRender()
 			* translateToHeroPosition
 			* scaleDown
 			* rotateToDirection;
-	} 
+	}
 	else
 	{
-		// game over
+		//
+		// game over state
+		//
 
 		const glm::mat4 rotateToDirection = CharacterHelper::getRotationToDirectionMatrix(hero);
 
@@ -284,19 +296,17 @@ void Application::onRender()
 			xGameOverFunctionParameter += SDL_GetTicks() - gameOverLastRenderingTime;
 
 			float y;
-			if (xGameOverFunctionParameter <= config::HERO_ROTATION_LENGTH_AT_GAME_OVER)
+			if (xGameOverFunctionParameter <= config::GAME_OVER_ANIMATION_LENGTH_IN_MS)
 			{
-				y = (xGameOverFunctionParameter / config::HERO_ROTATION_LENGTH_AT_GAME_OVER) * 45;
-				gameOverRotation = glm::rotate<float>(y, 1, 0, 0);
+				y = (xGameOverFunctionParameter / (float)config::GAME_OVER_ANIMATION_LENGTH_IN_MS) * 45;
 				gameOverLastRenderingTime = SDL_GetTicks();
 			}
 			else
 			{
 				y = 45;
 				gameOverLastRenderingTime = -1;
-				gameOverRotation = glm::rotate<float>(y, 1, 0, 0);
 			}
-
+			gameOverRotation = glm::rotate<float>(y, 1, 0, 0);
 		}
 		else if (gameOverLastRenderingTime == 0)
 		{
@@ -313,7 +323,6 @@ void Application::onRender()
 			* scaleDown
 			* rotateToDirection
 			* gameOverRotation;
-
 	}
 
 	shaderManager.SetUniform("world", matWorld);

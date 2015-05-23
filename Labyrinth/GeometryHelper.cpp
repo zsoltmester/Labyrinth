@@ -2,7 +2,6 @@
 
 #include "config.h"
 
-
 //
 // GeometryHelper
 //
@@ -10,7 +9,6 @@
 GeometryHelper::GeometryHelper(gVertexBuffer * const &vertexBufferManager) : vertexBufferManager(vertexBufferManager)
 {
 }
-
 
 //
 // QuadGeometryHelper
@@ -20,7 +18,7 @@ QuadGeometryHelper::QuadGeometryHelper(gVertexBuffer * const &vertexBufferManage
 {
 }
 
-void QuadGeometryHelper::initialize() 
+void QuadGeometryHelper::initialize()
 {
 	vertexBufferManager
 		// position
@@ -44,7 +42,6 @@ int QuadGeometryHelper::getTheNumberOfVerticies()
 {
 	return 4;
 }
-
 
 //
 // CuboidGeometryHelper
@@ -111,8 +108,8 @@ void CuboidGeometryHelper::initialize()
 	// texture
 	//
 
-	const short NUMBER_OF_SIDES = 5;
-	for (short i = 0; i < NUMBER_OF_SIDES; ++i)
+	const int NUMBER_OF_SIDES = 5;
+	for (int i = 0; i < NUMBER_OF_SIDES; ++i)
 	{
 		vertexBufferManager
 			->AddData(2, 0, 0)
@@ -139,7 +136,7 @@ SphereGeometryHelper::SphereGeometryHelper(gVertexBuffer * const &vertexBufferMa
 // based on: http://stackoverflow.com/questions/22058111/opengl-draw-sphere-using-glvertex3f
 void SphereGeometryHelper::initialize()
 {
-	for (short i = 0; i <= config::SUN_AND_MOON_RESOLUTION; ++i) {
+	for (int i = 0; i <= config::SUN_AND_MOON_RESOLUTION; ++i) {
 		const float v0 = 3.1415f * (0.5f + (float)(i - 1) / config::SUN_AND_MOON_RESOLUTION);
 		const float sinV0 = sinf(v0);
 		const float cosV0 = cosf(v0);
@@ -148,7 +145,7 @@ void SphereGeometryHelper::initialize()
 		const float sinV1 = sinf(v1);
 		const float cosV1 = cosf(v1);
 
-		for (short j = 0; j <= config::SUN_AND_MOON_RESOLUTION; ++j) {
+		for (int j = 0; j <= config::SUN_AND_MOON_RESOLUTION; ++j) {
 			const float u = 2 * 3.1415f * (float)(j - 1) / config::SUN_AND_MOON_RESOLUTION;
 			const float cosU = cosf(u);
 			const float sinU = sinf(u);
@@ -193,7 +190,7 @@ void CylinderGeometryHelper::initializeShield()
 	glm::vec3 lastVertex;
 
 	const float halfThickness = config::COIN_THICKNESS / 2.0f;
-	for (short i = 0; i <= config::COIN_RESOLUTION; ++i)
+	for (int i = 0; i <= config::COIN_RESOLUTION; ++i)
 	{
 		const float u0 = (i / (float)config::COIN_RESOLUTION);
 		const float u = -u0 * 2 * 3.1415f;
@@ -248,7 +245,7 @@ void CylinderGeometryHelper::initializeBottom()
 		->AddData(0, -halfThickness, config::COIN_RADIUS, 0) // center position
 		->AddData(1, -1, 0, 0) // center normal
 		->AddData(2, 0.5f, 0.5f); // center texture
-	for (short i = 0; i <= config::COIN_RESOLUTION; ++i)
+	for (int i = 0; i <= config::COIN_RESOLUTION; ++i)
 	{
 		const float u = -(i / (float)config::COIN_RESOLUTION) * 2 * 3.1415f;
 		const float uCos = cosf(u);
@@ -274,7 +271,7 @@ void CylinderGeometryHelper::initializeTop()
 		->AddData(0, halfThickness, config::COIN_RADIUS, 0) // center position
 		->AddData(1, 1, 0, 0) // center normal
 		->AddData(2, 0.5f, 0.5f); // center texture
-	for (short i = 0; i <= config::COIN_RESOLUTION; ++i)
+	for (int i = 0; i <= config::COIN_RESOLUTION; ++i)
 	{
 		const float u = (i / (float)config::COIN_RESOLUTION) * 2 * 3.1415f;
 		const float uCos = cosf(u);
@@ -314,7 +311,6 @@ int CylinderGeometryHelper::getTheNumberOfVerticiesForTop()
 	return config::COIN_RESOLUTION + 2;
 }
 
-
 //
 // DiamondGeometryHelper
 //
@@ -338,7 +334,7 @@ void DiamondGeometryHelper::initializeBottomPyramid()
 		->AddData(0, bottomVertex.x, bottomVertex.y, bottomVertex.z) // center position
 		->AddData(1, 0, -1, 0) // center normal
 		->AddData(2, 0.5f, 0.5f); // center texture
-	for (short i = 0; i <= config::DIAMOND_NUMBER_OF_SIDES; ++i)
+	for (int i = 0; i <= config::DIAMOND_NUMBER_OF_SIDES; ++i)
 	{
 		const float u = (i / (float)config::DIAMOND_NUMBER_OF_SIDES) * 2 * 3.1415f;
 		const float uCos = cosf(u);
@@ -389,7 +385,7 @@ void DiamondGeometryHelper::initializeTopPyramid()
 		->AddData(0, topVertex.x, topVertex.y, topVertex.z) // center position
 		->AddData(1, 0, 1, 0) // center normal
 		->AddData(2, 0.5f, 0.5f); // center texture
-	for (short i = 0; i <= config::DIAMOND_NUMBER_OF_SIDES; ++i)
+	for (int i = 0; i <= config::DIAMOND_NUMBER_OF_SIDES; ++i)
 	{
 		const float u = -(i / (float)config::DIAMOND_NUMBER_OF_SIDES) * 2 * 3.1415f;
 		const float uCos = cosf(u);

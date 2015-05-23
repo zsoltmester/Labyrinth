@@ -34,18 +34,13 @@ bool canGoToDirection(Field field, Character::Direction characterDirection, Char
 
 void Application::onKeyboardDown(SDL_KeyboardEvent& key)
 {
-	if (config::IS_DEBUG)
+	if (config::IS_FREE_VIEW)
 	{
 		cameraManager.KeyboardDown(key);
 		return;
 	}
 
-	if (isWin || isGameOver)
-	{
-		return;
-	}
-
-	if (hero->isAnimating())
+	if (isWin || isGameOver || hero->isAnimating())
 	{
 		return;
 	}
@@ -107,11 +102,11 @@ void Application::onKeyboardDown(SDL_KeyboardEvent& key)
 
 void Application::onKeyboardUp(SDL_KeyboardEvent& key)
 {
-	if (config::IS_DEBUG) 
+	if (config::IS_FREE_VIEW)
 	{
 		cameraManager.KeyboardUp(key);
 	}
-	else if (isWin)
+	else if (isWin || isGameOver)
 	{
 		return;
 	}
@@ -123,7 +118,7 @@ void Application::onKeyboardUp(SDL_KeyboardEvent& key)
 
 void Application::onMouseMove(SDL_MouseMotionEvent& mouse)
 {
-	if (config::IS_DEBUG)
+	if (config::IS_FREE_VIEW)
 	{
 		cameraManager.MouseMove(mouse);
 	}

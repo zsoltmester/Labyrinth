@@ -2,14 +2,14 @@
 
 #include "config.h"
 #include "CharacterHelper.h"
- 
+
 void Application::onUpdate()
 {
 	//
-	// Debug
+	// free view
 	//
 
-	if (config::IS_DEBUG) 
+	if (config::IS_FREE_VIEW)
 	{
 		static Uint32 last_time = SDL_GetTicks();
 		const float delta_time = (SDL_GetTicks() - last_time) / 1000.0f;
@@ -18,11 +18,11 @@ void Application::onUpdate()
 		return;
 	}
 
+	//
+	// check if hero collected a coin or a diamond
+	//
+
 	Field* currentField = &fields[hero->getCurrentPosition().x][hero->getCurrentPosition().z];
-	
-	//
-	// Check if hero collected a coin or a diamond
-	//
 
 	if (currentField->hasCoin())
 	{
@@ -35,32 +35,32 @@ void Application::onUpdate()
 		currentField->setHasDiamond(false);
 		++collectedDiamonds;
 		std::cout << "[onUpdate()] Diamond collected! Number of diamonds: " << collectedDiamonds << std::endl;
-		if (collectedDiamonds == config::NUMBER_OF_DIAMONDS) 
+		if (collectedDiamonds == config::NUMBER_OF_DIAMONDS)
 		{
 			isWin = true;
 		}
 	}
 
 	//
-	// In case of win
+	// win
 	//
 
 	if (isWin)
 	{
-		float jumpSize = (collectedCoins / (float)config::NUMBER_OF_COINS) * config::JUMP_MULTIPLIER;
+		float jumpHeight = (collectedCoins / (float)config::NUMBER_OF_COINS) * config::JUMP_HEIGHT + config::FIELD_SIZE * 3;
 
 		glm::vec4 eye = glm::vec4(
 			config::FIELD_SIZE * 3,
-			jumpSize * 1.5f,
+			jumpHeight * 1.5f,
 			config::FIELD_SIZE * 3,
 			1
-		);
+			);
 
-		glm::vec4 at = glm::vec4(0, jumpSize / 2, 0, 1);
+		glm::vec4 at = glm::vec4(0, jumpHeight / 2, 0, 1);
 
 		const glm::mat4 translateToHeroPosition = CharacterHelper::getTranslateToHeroPositionMatrix(hero);
 		const glm::mat4 translateToTheMiddleOfTheField = CharacterHelper::getTranslateToTheMiddleOfTheFieldMatrix(hero);
-		float cameraRotation = SDL_GetTicks() / 1000.0f * 360.0f / config::CAMERA_ROTATION_ANIMATION_LENGTH;
+		float cameraRotation = SDL_GetTicks() / 1000.0f * 360.0f / config::WIN_ROTATION_ANIMATION_LENGTH;
 		const glm::mat4 rotation = glm::rotate<float>(cameraRotation, 0, 1, 0);
 
 		eye = translateToTheMiddleOfTheField
@@ -77,6 +77,10 @@ void Application::onUpdate()
 
 		return;
 	}
+
+	//
+	// game over
+	//
 
 	if (isGameOver)
 	{
@@ -105,23 +109,24 @@ void Application::onUpdate()
 			config::FIELD_SIZE / 2.0f,
 			-directionBasedOffsetZ,
 			1
-		);
+			);
 
 		glm::vec4 at = glm::vec4(
 			0,
 			config::FIELD_SIZE / 2.0f,
 			0,
 			1
-		);
+			);
 
 		const glm::mat4 translateToHeroPosition = CharacterHelper::getTranslateToHeroPositionMatrix(hero);
 		const glm::mat4 translateToTheMiddleOfTheField = CharacterHelper::getTranslateToTheMiddleOfTheFieldMatrix(hero);
-		
+
 		glm::mat4 gameOverTranslate;
 		static float animationSize;
 		if (gameOverLastRenderingTime > 0)
 		{
-			animationSize = (config::FIELD_SIZE / 4.0f) * (xGameOverFunctionParameter / config::HERO_ROTATION_LENGTH_AT_GAME_OVER);
+			animationSize = (config::FIELD_SIZE / 3.0f)
+				* (xGameOverFunctionParameter / (float)config::GAME_OVER_ANIMATION_LENGTH_IN_MS);
 		}
 
 		switch (hero->getCurrentDirection())
@@ -157,33 +162,33 @@ void Application::onUpdate()
 	}
 
 	//
-	// Check if current position is a portal
+	// portal
 	//
 
-	if (isPortalActive && currentField->hasPortal()) 
+	if (isPortalActive && currentField->hasPortal())
 	{
-		for (short i = 0; i < config::MAP_SIZE && isPortalActive; ++i)
+		for (int i = 0; i < config::MAP_SIZE && isPortalActive; ++i)
 		{
-			for (short j = 0; j < config::MAP_SIZE && isPortalActive; ++j)
+			for (int j = 0; j < config::MAP_SIZE && isPortalActive; ++j)
 			{
 				if (fields[i][j].hasPortal() && !(hero->getCurrentPosition().x == i && hero->getCurrentPosition().z == j))
 				{
 					hero->teleport(Character::Position(i, j));
-					lastPortalPosition = Character::Position(i,j);
+					lastPortalPosition = Character::Position(i, j);
 					isPortalActive = false;
 				}
 			}
 		}
 	}
-	else if (!isPortalActive 
-		&& (lastPortalPosition.x != hero->getCurrentPosition().x 
+	else if (!isPortalActive
+		&& (lastPortalPosition.x != hero->getCurrentPosition().x
 		|| lastPortalPosition.z != hero->getCurrentPosition().z))
 	{
 		isPortalActive = true;
 	}
 
 	//
-	// Set the characters animation time
+	// hero animation time
 	//
 
 	if (hero->isAnimating())
@@ -197,7 +202,7 @@ void Application::onUpdate()
 		{
 			hero->setAnimationTime(1); // TODO It's a hack...
 		}
-		if (hero->getAnimationTime() > config::MOVEMENT_TIME_IN_MS)
+		if (hero->getAnimationTime() > config::CHARACTER_MOVEMENT_TIME_IN_MS)
 		{
 			hero->turnOffAnimation();
 		}
@@ -205,27 +210,31 @@ void Application::onUpdate()
 	}
 
 	//
-	// Top view
+	// top view
 	//
 
 	if (isTopView)
 	{
 		const int rawHalfMapSize = config::MAP_SIZE / 2;
 		const float halfMapSize = rawHalfMapSize * config::FIELD_SIZE;
+
 		const glm::vec3 at = glm::vec3(
 			halfMapSize + config::FIELD_SIZE / 2 + 0.00001f,
 			0,
 			halfMapSize + config::FIELD_SIZE / 2);
+
 		const glm::vec3 eye = glm::vec3(
 			halfMapSize + config::FIELD_SIZE / 2,
 			1.3f * config::MAP_SIZE * config::FIELD_SIZE,
 			halfMapSize + config::FIELD_SIZE / 2);
+
 		cameraManager.SetView(eye, at, glm::vec3(0, 1, 0));
+
 		return;
 	}
 
 	//
-	// Set the camera
+	// default camera
 	//
 
 	float directionBasedOffsetX = 0;
@@ -253,14 +262,14 @@ void Application::onUpdate()
 		config::WALL_HEIGHT * 1.5f,
 		directionBasedOffsetZ,
 		1
-	);
+		);
 
 	glm::vec4 at = glm::vec4(
 		-directionBasedOffsetX,
 		0,
 		-directionBasedOffsetZ,
 		1
-	);
+		);
 
 	const glm::mat4 translateToHeroPosition = CharacterHelper::getTranslateToHeroPositionMatrix(hero);
 	const glm::mat4 translateToTheMiddleOfTheField = CharacterHelper::getTranslateToTheMiddleOfTheFieldMatrix(hero);

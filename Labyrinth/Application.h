@@ -43,13 +43,13 @@ public:
 	void onMouseDown(SDL_MouseButtonEvent&);
 	void onMouseUp(SDL_MouseButtonEvent&);
 	void onMouseWheel(SDL_MouseWheelEvent&);
-	void onResize(const int width,const int height);
+	void onResize(const int width, const int height);
 
 	//helpers
 	void drawWall(glm::mat4 matWorld);
 	const glm::vec3 drawOrb(const float orbitRadius);
 
-private: 
+private:
 	// managers
 	gCamera	cameraManager;
 	gShaderProgram shaderManager;
@@ -79,7 +79,7 @@ private:
 	GLuint suzanneTextureID;
 
 	Field fields[config::MAP_SIZE][config::MAP_SIZE];
-	
+
 	Hero* hero;
 	Mesh* heroMesh;
 

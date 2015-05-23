@@ -4,7 +4,7 @@
 // Character class
 // ***
 
-Character::Character(Character::Position position, Direction direction) 
+Character::Character(Character::Position position, Direction direction)
 	: _position(position), _direction(direction)
 {
 	_isMovingForward = false;
@@ -148,7 +148,6 @@ void Character::setAnimationTime(int animationTime)
 {
 	_animationTime = animationTime;
 }
-
 
 bool Character::isAnimating() const
 {
