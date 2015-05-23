@@ -164,6 +164,11 @@ void Character::turnOffAnimation()
 	_animationTime = 0;
 }
 
+void Character::teleport(Position postion)
+{
+	_position = postion;
+}
+
 // ***
 // Hero class
 // ***

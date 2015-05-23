@@ -20,7 +20,7 @@ namespace config
 	const std::string TEXTURE_FILE_NAME_SUZANNE = "texture_suzanne.bmp";
 
 	// map
-	const short	MAP_SIZE = 50; // in task: 50
+	const short	MAP_SIZE = 20; // in task: 50
 	const float	FIELD_SIZE = 1.0f;
 
 	// wall
@@ -70,5 +70,13 @@ namespace config
 
 	// charecters
 	const int MOVEMENT_TIME_IN_MS = 500;
+
+	// win
+	const float JUMP_MULTIPLIER = 10 * config::WALL_HEIGHT;
+	const float JUMP_LENGTH = 2000;
+	const float CAMERA_ROTATION_ANIMATION_LENGTH = 4;
+
+	// game over
+	const float HERO_ROTATION_LENGTH_AT_GAME_OVER = 2000;
 
 }

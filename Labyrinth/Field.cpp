@@ -101,12 +101,12 @@ void Field::setHasDiamond(const bool hasDiamond)
 }
 
 
-const bool Field::hasPortal(const PortalType portal) const
+const bool Field::hasPortal() const
 {
-	return _portal == portal;
+	return _hasPortal;
 }
 
-void Field::setHasPortal(const PortalType portal)
+void Field::setHasPortal(const bool hasPortal)
 {
-	_portal = portal;
+	_hasPortal = hasPortal;
 }

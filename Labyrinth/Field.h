@@ -4,11 +4,6 @@ class Field
 {
 public:
 
-	enum PortalType
-	{
-		START, END, NONE
-	};
-
 	// TODO refactor the wall setter with enum
 
 	/*
@@ -60,10 +55,10 @@ public:
 	void setHasDiamond(const bool hasDiamond);
 
 	/*
-	Returns true if the field contains the specified portal.
+	Returns true if the field contains a portal.
 	*/
-	const bool hasPortal(const PortalType type) const;
-	void setHasPortal(const PortalType type);
+	const bool hasPortal() const;
+	void setHasPortal(const bool hasPortal);
 
 private:
 	bool _hasZMinusWall = false;
@@ -78,6 +73,5 @@ private:
 		 
 	bool _hasCoin = false;
 	bool _hasDiamond = false;
-
-	PortalType _portal = NONE;
+	bool _hasPortal = false;
 };

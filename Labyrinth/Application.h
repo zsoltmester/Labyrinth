@@ -82,4 +82,19 @@ private:
 	
 	Hero* hero;
 	Mesh* heroMesh;
+
+	bool isTopView;
+
+	int collectedCoins, collectedDiamonds;
+
+	bool isPortalActive;
+	Character::Position lastPortalPosition = Character::Position(-1, -1);
+
+	bool isWin;
+	int winLastRenderingTime;
+	int xWinFunctionParameter;
+
+	bool isGameOver;
+	int gameOverLastRenderingTime;
+	int xGameOverFunctionParameter;
 };

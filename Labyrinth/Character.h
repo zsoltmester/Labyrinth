@@ -83,6 +83,9 @@ public:
 	// Turn off the animation state
 	void turnOffAnimation();
 
+	// Teleport to a position
+	void teleport(Position);
+
 private:
 	
 	Position _position;

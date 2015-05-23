@@ -46,26 +46,26 @@ void initAndConfigFields(Field fields[config::MAP_SIZE][config::MAP_SIZE])
 		}
 	}
 
-	// start portal place
-	std::pair<short, short> startPortalPlace;
+	// first portal place
+	std::pair<short, short> firstPortalPlace;
 	do
 	{
 		i = rand() % config::MAP_SIZE;
 		j = rand() % config::MAP_SIZE;
-		startPortalPlace = std::pair<short, short>(i, j);
-	} while ((coinsPlace.find(startPortalPlace) != coinsPlace.end())
-		|| (diamondsPlace.find(startPortalPlace) != diamondsPlace.end()));
+		firstPortalPlace = std::pair<short, short>(i, j);
+	} while ((coinsPlace.find(firstPortalPlace) != coinsPlace.end())
+		|| (diamondsPlace.find(firstPortalPlace) != diamondsPlace.end()));
 	
-	// end portal place
-	std::pair<short, short> endPortalPlace;
+	// second portal place
+	std::pair<short, short> secondPortalPlace;
 	do
 	{
 		i = rand() % config::MAP_SIZE;
 		j = rand() % config::MAP_SIZE;
-		endPortalPlace = std::pair<short, short>(i, j);
-	} while ((coinsPlace.find(endPortalPlace) != coinsPlace.end())
-		|| (diamondsPlace.find(endPortalPlace) != diamondsPlace.end())
-		|| startPortalPlace == endPortalPlace);
+		secondPortalPlace = std::pair<short, short>(i, j);
+	} while ((coinsPlace.find(secondPortalPlace) != coinsPlace.end())
+		|| (diamondsPlace.find(secondPortalPlace) != diamondsPlace.end())
+		|| firstPortalPlace == secondPortalPlace);
 
 	// set fields attributes
 	const short correctedPossibility = 1.0f / (config::WALL_POSSIBILITY / 2.0f);
@@ -132,13 +132,13 @@ void initAndConfigFields(Field fields[config::MAP_SIZE][config::MAP_SIZE])
 			// portal
 			//
 
-			if (startPortalPlace == std::pair<short, short>(i, j))
+			if (firstPortalPlace == std::pair<short, short>(i, j))
 			{
-				fields[i][j].setHasPortal(Field::PortalType::START);
+				fields[i][j].setHasPortal(true);
 			} 
-			else if (endPortalPlace == std::pair<short, short>(i, j))
+			else if (secondPortalPlace == std::pair<short, short>(i, j))
 			{
-				fields[i][j].setHasPortal(Field::PortalType::END);
+				fields[i][j].setHasPortal(true);
 			}
 		}
 	}
@@ -155,8 +155,8 @@ void initHero(Hero*& hero, const Field fields[config::MAP_SIZE][config::MAP_SIZE
 		j = rand() % config::MAP_SIZE;
 	} while (fields[i][j].hasCoin() 
 		|| fields[i][j].hasDiamond()
-		|| fields[i][j].hasPortal(Field::PortalType::START)
-		|| fields[i][j].hasPortal(Field::PortalType::END));
+		|| fields[i][j].hasPortal()
+		|| fields[i][j].hasPortal());
 	Character::Position heroPosition = Character::Position(i, j);
 
 	// hero direction
@@ -187,6 +187,16 @@ void initHero(Hero*& hero, const Field fields[config::MAP_SIZE][config::MAP_SIZE
 
 Application::Application(void)
 {
+	isTopView = false;
+	collectedCoins = 0; 
+	collectedDiamonds = 0;
+	isPortalActive = true;
+	isWin = false;
+	winLastRenderingTime = 0;
+	xWinFunctionParameter = 0;
+	isGameOver = false;
+	gameOverLastRenderingTime = 0;
+	xGameOverFunctionParameter = 0;
 }
 
 const bool Application::onInitialize()

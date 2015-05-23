@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "config.h"
+#include "CharacterHelper.h"
 
 void Application::drawWall(glm::mat4 matWorld)
 {
@@ -84,7 +85,7 @@ void Application::onRender()
 				glm::translate<float>(i * config::FIELD_SIZE, 0, j * config::FIELD_SIZE);
 
 			// check if it's a portal
-			if (fields[i][j].hasPortal(Field::PortalType::START) || fields[i][j].hasPortal(Field::PortalType::END))
+			if (fields[i][j].hasPortal())
 			{
 				shaderManager.SetUniform("isThisAFieldWithAPortal", true);
 				const float middleOfTheField = config::FIELD_SIZE / 2.0f;
@@ -190,85 +191,130 @@ void Application::onRender()
 	// draw the hero
 	//
 
-	const glm::mat4 rotateToDirection = glm::rotate<float>(hero->getCurrentDirection() * 90, 0, 1, 0);
-
-	const glm::mat4 scaleDown = glm::scale<float>(
-		config::FIELD_SIZE / 3.5f, config::FIELD_SIZE / 3.5f, config::FIELD_SIZE / 3.5f);
-
-	const glm::mat4 translateToHeroPosition = glm::translate<float>(
-		hero->getCurrentPosition().x * config::FIELD_SIZE, 0, hero->getCurrentPosition().z * config::FIELD_SIZE);
-	const float offset = config::FIELD_SIZE / 2.0f;
-	const glm::mat4 translateToTheMiddleOfTheField = glm::translate<float>(offset, 0, offset);
-	const glm::mat4 translateToUp = glm::translate<float>(0, config::FIELD_SIZE / 2.0f, 0);
-
-	glm::mat4 turningRotation = glm::mat4(1);
-	glm::mat4 movingTranslate = glm::mat4(1);
-
-	if (hero->isAnimating())
+	if (!isWin && !isGameOver)
 	{
-		const float currentPercent = hero->getAnimationTime() / (float)config::MOVEMENT_TIME_IN_MS;
-		const float currentDistance = currentPercent * config::FIELD_SIZE - config::FIELD_SIZE;
+		const glm::mat4 rotateToDirection = CharacterHelper::getRotationToDirectionMatrix(hero);
 
-		if (hero->isMovingForward())
-		{
-			switch (hero->getCurrentDirection())
-			{
-			case Character::X_PLUS:
-				movingTranslate = glm::translate<float>(currentDistance, 0, 0);
-				break;
-			case Character::X_MINUS:
-				movingTranslate = glm::translate<float>(-currentDistance, 0, 0);
-				break;
-			case Character::Z_PLUS:
-				movingTranslate = glm::translate<float>(0, 0, currentDistance);
-				break;
-			case Character::Z_MINUS:
-				movingTranslate = glm::translate<float>(0, 0, -currentDistance);
-				break;
-			default:
-				break;
-			}
-		}
+		const glm::mat4 scaleDown = glm::scale<float>(
+			config::FIELD_SIZE / 3.5f, config::FIELD_SIZE / 3.5f, config::FIELD_SIZE / 3.5f);
 
-		if (hero->isMovingBackward())
-		{
-			switch (hero->getCurrentDirection())
-			{
-			case Character::X_PLUS:
-				movingTranslate = glm::translate<float>(-currentDistance, 0, 0);
-				break;
-			case Character::X_MINUS:
-				movingTranslate = glm::translate<float>(currentDistance, 0, 0);
-				break;
-			case Character::Z_PLUS:
-				movingTranslate = glm::translate<float>(0, 0, -currentDistance);
-				break;
-			case Character::Z_MINUS:
-				movingTranslate = glm::translate<float>(0, 0, currentDistance);
-				break;
-			default:
-				break;
-			}
-		}
+		const glm::mat4 translateToHeroPosition = CharacterHelper::getTranslateToHeroPositionMatrix(hero);
+		const glm::mat4 translateToTheMiddleOfTheField = CharacterHelper::getTranslateToTheMiddleOfTheFieldMatrix(hero);
+		const glm::mat4 translateToUp = glm::translate<float>(0, config::FIELD_SIZE / 2.0f, 0);
 
-		if (hero->isTurningLeft())
-		{
-			turningRotation = glm::rotate<float>(-90 + 90 * currentPercent, 0, 1, 0);
-		}
+		glm::mat4 movingTranslate = CharacterHelper::getMovingTranslateMatrix(hero);
+		glm::mat4 turningRotation = CharacterHelper::getTurningRotationMatrix(hero);
 
-		if (hero->isTurningRight())
-		{
-			turningRotation = glm::rotate<float>(90 - 90 * currentPercent, 0, 1, 0);
-		}
+		matWorld = movingTranslate
+			* translateToUp
+			* translateToTheMiddleOfTheField
+			* translateToHeroPosition
+			* scaleDown
+			* turningRotation
+			* rotateToDirection;
 	}
+	else if (isWin)
+	{
+		const glm::mat4 rotateToDirection = CharacterHelper::getRotationToDirectionMatrix(hero);
 
-	matWorld = movingTranslate
-		* translateToUp
-		* translateToTheMiddleOfTheField
-		* translateToHeroPosition
-		* scaleDown
-		* turningRotation
-		* rotateToDirection;
+		const glm::mat4 scaleDown = glm::scale<float>(
+			config::FIELD_SIZE / 3.5f, config::FIELD_SIZE / 3.5f, config::FIELD_SIZE / 3.5f);
+
+		const glm::mat4 translateToHeroPosition = CharacterHelper::getTranslateToHeroPositionMatrix(hero);
+		const glm::mat4 translateToTheMiddleOfTheField = CharacterHelper::getTranslateToTheMiddleOfTheFieldMatrix(hero);
+		const glm::mat4 translateToUp = glm::translate<float>(0, config::FIELD_SIZE / 2.0f, 0);
+
+		// *** jump function:
+		// 0 <= x <= JUMP_LENGTH (-> from 0 to jumpSize): (x / JUMP_LENGTH) * jumpSize
+		// JUMP_LENGTH < x <= 2*JUMP_LENGTH (-> from jumpSize to 0): (1 - ((x - JUMP_LENGTH) / JUMP_LENGTH)) * jumpSize
+
+		glm::mat4 jumpTranslate = glm::mat4(0);
+		float jumpSize = (collectedCoins / (float)config::NUMBER_OF_COINS) * config::JUMP_MULTIPLIER;
+		if (winLastRenderingTime != 0)
+		{
+			xWinFunctionParameter += SDL_GetTicks() - winLastRenderingTime;
+
+			float y;
+			if (xWinFunctionParameter <= config::JUMP_LENGTH)
+			{
+				y = (xWinFunctionParameter / config::JUMP_LENGTH) * jumpSize;
+			}
+			else if (xWinFunctionParameter <= 2 * config::JUMP_LENGTH)
+			{
+				y = (1 - ((xWinFunctionParameter - config::JUMP_LENGTH) / config::JUMP_LENGTH)) * jumpSize;
+			}
+			else
+			{
+				y = 0;
+				xWinFunctionParameter = 0;
+			}
+
+			jumpTranslate = glm::translate<float>(0, y, 0);
+			winLastRenderingTime = SDL_GetTicks();
+		}
+		else
+		{
+			winLastRenderingTime = SDL_GetTicks();
+		}
+		
+
+		matWorld = jumpTranslate
+			* translateToUp
+			* translateToTheMiddleOfTheField
+			* translateToHeroPosition
+			* scaleDown
+			* rotateToDirection;
+	} 
+	else
+	{
+		// game over
+
+		const glm::mat4 rotateToDirection = CharacterHelper::getRotationToDirectionMatrix(hero);
+
+		const glm::mat4 scaleDown = glm::scale<float>(
+			config::FIELD_SIZE / 3.5f, config::FIELD_SIZE / 3.5f, config::FIELD_SIZE / 3.5f);
+
+		const glm::mat4 translateToHeroPosition = CharacterHelper::getTranslateToHeroPositionMatrix(hero);
+		const glm::mat4 translateToTheMiddleOfTheField = CharacterHelper::getTranslateToTheMiddleOfTheFieldMatrix(hero);
+		const glm::mat4 translateToUp = glm::translate<float>(0, config::FIELD_SIZE / 2.0f, 0);
+
+		glm::mat4 gameOverRotation = glm::mat4(1);
+		if (gameOverLastRenderingTime > 0)
+		{
+			xGameOverFunctionParameter += SDL_GetTicks() - gameOverLastRenderingTime;
+
+			float y;
+			if (xGameOverFunctionParameter <= config::HERO_ROTATION_LENGTH_AT_GAME_OVER)
+			{
+				y = (xGameOverFunctionParameter / config::HERO_ROTATION_LENGTH_AT_GAME_OVER) * 45;
+				gameOverRotation = glm::rotate<float>(y, 1, 0, 0);
+				gameOverLastRenderingTime = SDL_GetTicks();
+			}
+			else
+			{
+				y = 45;
+				gameOverLastRenderingTime = -1;
+				gameOverRotation = glm::rotate<float>(y, 1, 0, 0);
+			}
+
+		}
+		else if (gameOverLastRenderingTime == 0)
+		{
+			gameOverLastRenderingTime = SDL_GetTicks();
+		}
+		else
+		{
+			gameOverRotation = glm::rotate<float>(45, 1, 0, 0);
+		}
+
+		matWorld = translateToUp
+			* translateToTheMiddleOfTheField
+			* translateToHeroPosition
+			* scaleDown
+			* rotateToDirection
+			* gameOverRotation;
+
+	}
 
 	shaderManager.SetUniform("world", matWorld);
 	shaderManager.SetUniform("worldInverseTranspose", glm::transpose(glm::inverse(matWorld)));
