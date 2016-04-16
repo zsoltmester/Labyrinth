@@ -1,2 +1,2 @@
 # labyrinth
-OpenGL practice - with an arcade game.
+An arcade game, using OpenGL and SDL.
