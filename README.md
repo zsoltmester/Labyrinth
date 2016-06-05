@@ -1,2 +1,2 @@
 # labyrinth
-An arcade game, using OpenGL and SDL.
+Arcade game, using OpenGL and SDL.
